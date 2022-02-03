@@ -1,0 +1,46 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["linux-musl", "native"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model FcmToken {
+  fcmTokenId BigInt   @id @default(autoincrement())
+  userId     BigInt
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  updatedAt  DateTime @default(now()) @db.DateTime(0)
+  fcmToken   String?  @db.VarChar(200)
+  deviceId   String   @unique @db.VarChar(200)
+  User       User     @relation(fields: [userId], references: [userId], onDelete: NoAction, map: "FcmToken_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model User {
+  userId      BigInt     @id @default(autoincrement())
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  phoneNumber String     @unique @db.Char(11)
+  birthday    String     @db.Char(8)
+  gender      String     @db.Char(1)
+  email       String     @unique @db.VarChar(50)
+  password    String     @db.VarChar(64)
+  name        String     @db.VarChar(8)
+  FcmToken    FcmToken[]
+}
+
+model PlaceAdmin {
+  adminId     BigInt   @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.DateTime(0)
+  updatedAt   DateTime @default(now()) @db.DateTime(0)
+  phoneNumber String   @unique @db.Char(11)
+  birthday    String   @db.Char(8)
+  gender      String   @db.Char(1)
+  email       String   @unique @db.VarChar(50)
+  password    String   @db.VarChar(64)
+  name        String   @db.VarChar(8)
+}
