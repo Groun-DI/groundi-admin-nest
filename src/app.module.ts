@@ -9,6 +9,7 @@ import { LoggingMiddleware } from './middleware/logging.middleware';
 import { UserModule } from './api/user/user.module';
 import { UserController } from './api/user/user.controller';
 import { AuthController } from './api/auth/auth.controller';
+import { CenterModule } from './api/center/center.module';
 
 console.log(process.env.NODE_ENV);
 
@@ -20,7 +21,8 @@ console.log(process.env.NODE_ENV);
       envFilePath: `./env/.env.${process.env.NODE_ENV}`,
     }),
     AuthModule,
-    UserModule
+    UserModule,
+    CenterModule
   ],
   controllers: [AppController],
   providers: [

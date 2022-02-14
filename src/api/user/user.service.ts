@@ -8,7 +8,7 @@ import {
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async getMember(id: number | bigint): Promise<PlaceAdminModel> {
     const member = await this.prismaService.placeAdmin.findUnique({
