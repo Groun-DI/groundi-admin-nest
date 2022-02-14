@@ -42,11 +42,11 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post('/refresh')
   refreshToken(@User() user: JwtModel) {
-    if (!user.phoneNumber || !user.adminId)
+    if (!user.phoneNumber || !user.id)
       throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 
     return this.authService.refreshToken(
-      Number(user.adminId),
+      Number(user.id),
       user.email,
       user.phoneNumber,
     );

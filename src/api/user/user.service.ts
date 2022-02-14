@@ -10,9 +10,9 @@ import {
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getMember(adminId: number | bigint): Promise<PlaceAdminModel> {
+  async getMember(id: number | bigint): Promise<PlaceAdminModel> {
     const member = await this.prismaService.placeAdmin.findUnique({
-      where: { adminId: adminId },
+      where: { id: id },
     });
     if (!member) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 

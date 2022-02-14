@@ -23,9 +23,9 @@ export class AuthorizationService {
     this.rTokenSecret = this.configService.get<string>('REFRESH_TOKEN_SECRET');
   }
 
-  login(userId: number, email: string, phone: string): TokenRes {
+  login(id: number, email: string, phone: string): TokenRes {
     const payload: JwtModel = {
-      userId: userId,
+      id: id,
       email: email,
       phoneNumber: phone,
     };

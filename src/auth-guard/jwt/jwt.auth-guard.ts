@@ -8,5 +8,5 @@ export class JwtAuthGuard extends AuthGuard('jwt') {}
 export interface JwtModel {
   phoneNumber: string;
   email: string;
-  adminId: number | bigint;
+  id: number | bigint;
 }

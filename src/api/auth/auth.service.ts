@@ -30,14 +30,14 @@ export class AuthService {
   async login(body: LoginReq): Promise<TokenRes> {
     let userEntity = await this.prismaService.placeAdmin.findUnique({
       where: { email: body.email },
-      select: { adminId: true, password: true, phoneNumber: true },
+      select: { id: true, password: true, phoneNumber: true },
     });
     if (!userEntity)
       throw new UnauthorizedException(UNAUTHORIZED_TYPE.EMAIL_NOT_MATCH);
 
     if (await this.compare(body.password, userEntity.password)) {
       return this.authorizationService.login(
-        Number(userEntity.adminId),
+        Number(userEntity.id),
         body.email,
         userEntity.phoneNumber,
       );
@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   async createMember(body: CreateUserReq): Promise<TokenRes> {
-    let user: { adminId: bigint };
+    let user: { id: bigint };
 
     try {
       console.log(body.name);
@@ -61,7 +61,7 @@ export class AuthService {
           birthday: body.birthday,
         },
         select: {
-          adminId: true,
+          id: true,
         },
       });
     } catch (e) {
@@ -74,7 +74,7 @@ export class AuthService {
     }
 
     return this.authorizationService.login(
-      Number(user.adminId),
+      Number(user.id),
       body.email,
       body.phoneNumber,
     );
@@ -110,14 +110,14 @@ export class AuthService {
     if (!user) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 
     return this.authorizationService.login(
-      Number(user.adminId),
+      Number(user.id),
       user.email,
       user.phoneNumber,
     );
   }
 
-  refreshToken(userId: number, email: string, phoneNumber: string) {
-    return this.authorizationService.login(userId, email, phoneNumber);
+  refreshToken(id: number, email: string, phoneNumber: string) {
+    return this.authorizationService.login(id, email, phoneNumber);
   }
 
   private hash = async (pwd: string): Promise<string> => {

@@ -15,7 +15,7 @@ export class LoggingMiddleware implements NestMiddleware {
       const now = new Date();
       const { statusCode } = res;
       const { method, url } = res.req;
-      const user = (res.req.user as JwtModel)?.userId || '-';
+      const user = (res.req.user as JwtModel)?.id || '-';
       const isoString = now.toISOString();
 
       this.logger.log(

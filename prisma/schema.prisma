@@ -9,19 +9,18 @@ datasource db {
 }
 
 model FcmToken {
-  fcmTokenId BigInt   @id @default(autoincrement())
-  userId     BigInt
-  createdAt  DateTime @default(now()) @db.DateTime(0)
-  updatedAt  DateTime @default(now()) @db.DateTime(0)
-  fcmToken   String?  @db.VarChar(200)
-  deviceId   String   @unique @db.VarChar(200)
-  User       User     @relation(fields: [userId], references: [userId], onDelete: NoAction, map: "FcmToken_ibfk_1")
+  userId    BigInt
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+  fcmToken  String?  @db.VarChar(200)
+  deviceId  String   @unique @db.VarChar(200)
+  id        BigInt   @id @default(autoincrement())
+  User      User     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FcmToken_ibfk_1")
 
-  @@index([userId], map: "userId")
+  @@index([userId], map: "FcmToken_ibfk_1")
 }
 
 model User {
-  userId      BigInt     @id @default(autoincrement())
   createdAt   DateTime   @default(now()) @db.DateTime(0)
   updatedAt   DateTime   @default(now()) @db.DateTime(0)
   phoneNumber String     @unique @db.Char(11)
@@ -30,11 +29,11 @@ model User {
   email       String     @unique @db.VarChar(50)
   password    String     @db.VarChar(64)
   name        String     @db.VarChar(8)
+  id          BigInt     @id @default(autoincrement())
   FcmToken    FcmToken[]
 }
 
 model PlaceAdmin {
-  adminId     BigInt   @id @default(autoincrement())
   createdAt   DateTime @default(now()) @db.DateTime(0)
   updatedAt   DateTime @default(now()) @db.DateTime(0)
   phoneNumber String   @unique @db.Char(11)
@@ -43,4 +42,36 @@ model PlaceAdmin {
   email       String   @unique @db.VarChar(50)
   password    String   @db.VarChar(64)
   name        String   @db.VarChar(8)
+  id          BigInt   @id @default(autoincrement())
+  Center      Center[]
+}
+
+model Center {
+  id                      BigInt                    @id @unique(map: "id") @default(autoincrement())
+  adminId                 BigInt
+  createAt                DateTime                  @default(now()) @db.DateTime(0)
+  updatedAt               DateTime                  @default(now()) @db.DateTime(0)
+  name                    String                    @db.VarChar(40)
+  address                 String                    @unique(map: "address") @db.VarChar(85)
+  phoneNumber             String                    @unique(map: "phoneNumber") @db.VarChar(20)
+  PlaceAdmin              PlaceAdmin                @relation(fields: [adminId], references: [id], onDelete: NoAction, map: "Center_ibfk_1")
+  CenterLookupInformation CenterLookupInformation[]
+
+  @@index([adminId], map: "Center_ibfk_1")
+}
+
+model CenterLookupInformation {
+  id                 BigInt   @id @unique(map: "id") @default(autoincrement())
+  centerId           BigInt
+  createAt           DateTime @default(now()) @db.DateTime(0)
+  updateAt           DateTime @default(now()) @db.DateTime(0)
+  ceoName            String   @db.VarChar(20)
+  busniessType       String   @db.VarChar(250)
+  busniessCode       String   @unique(map: "busniessCode") @db.Char(10)
+  businessAttachment String   @db.Text
+  adminPhonenumber   String   @db.Char(11)
+  adminEmail         String   @db.VarChar(50)
+  Center             Center   @relation(fields: [centerId], references: [id], onDelete: NoAction, map: "CenterLookupInformation_ibfk_1")
+
+  @@index([centerId], map: "centerId")
 }

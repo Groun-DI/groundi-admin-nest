@@ -11,6 +11,6 @@ export class UserController {
 
   @Get()
   getMember(@User() user: JwtModel): Promise<PlaceAdminModel> {
-    return this.memberService.getMember(user.adminId);
+    return this.memberService.getMember(user.id);
   }
 }
