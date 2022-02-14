@@ -15,9 +15,9 @@ model FcmToken {
   fcmToken  String?  @db.VarChar(200)
   deviceId  String   @unique @db.VarChar(200)
   id        BigInt   @id @default(autoincrement())
-  User      User     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FcmToken_ibfk_1")
+  User      User     @relation(fields: [userId], references: [id])
 
-  @@index([userId], map: "FcmToken_ibfk_1")
+  @@index([userId])
 }
 
 model User {
@@ -47,31 +47,130 @@ model PlaceAdmin {
 }
 
 model Center {
-  id                      BigInt                    @id @unique(map: "id") @default(autoincrement())
+  id                      BigInt                    @id @default(autoincrement())
   adminId                 BigInt
   createAt                DateTime                  @default(now()) @db.DateTime(0)
   updatedAt               DateTime                  @default(now()) @db.DateTime(0)
   name                    String                    @db.VarChar(40)
-  address                 String                    @unique(map: "address") @db.VarChar(85)
-  phoneNumber             String                    @unique(map: "phoneNumber") @db.VarChar(20)
-  PlaceAdmin              PlaceAdmin                @relation(fields: [adminId], references: [id], onDelete: NoAction, map: "Center_ibfk_1")
+  address                 String                    @unique @db.VarChar(85)
+  phoneNumber             String                    @unique @db.VarChar(20)
+  PlaceAdmin              PlaceAdmin                @relation(fields: [adminId], references: [id])
   CenterLookupInformation CenterLookupInformation[]
+  Studio                  Studio[]
 
-  @@index([adminId], map: "Center_ibfk_1")
+  @@index([adminId])
 }
 
 model CenterLookupInformation {
-  id                 BigInt   @id @unique(map: "id") @default(autoincrement())
+  id                 BigInt   @id @default(autoincrement())
   centerId           BigInt
   createAt           DateTime @default(now()) @db.DateTime(0)
   updateAt           DateTime @default(now()) @db.DateTime(0)
   ceoName            String   @db.VarChar(20)
   busniessType       String   @db.VarChar(250)
-  busniessCode       String   @unique(map: "busniessCode") @db.Char(10)
+  busniessCode       String   @unique @db.Char(10)
   businessAttachment String   @db.Text
   adminPhonenumber   String   @db.Char(11)
   adminEmail         String   @db.VarChar(50)
-  Center             Center   @relation(fields: [centerId], references: [id], onDelete: NoAction, map: "CenterLookupInformation_ibfk_1")
+  Center             Center   @relation(fields: [centerId], references: [id])
 
-  @@index([centerId], map: "centerId")
+  @@index([centerId])
+}
+
+model Studio {
+  id                  BigInt                @id @default(autoincrement())
+  centerId            BigInt
+  createdAt           DateTime              @default(now()) @db.DateTime(0)
+  updateAt            DateTime              @default(now()) @db.DateTime(0)
+  name                String                @db.VarChar(40)
+  content             String                @db.Text
+  checkInNotice       String                @db.Text
+  openHours           DateTime              @db.DateTime(0)
+  closedHours         DateTime              @db.DateTime(0)
+  minimumReantalTime  Int
+  rentalTimeUnit      Int
+  basicOccupancy      Int
+  maximumOccupancy    Int
+  overCharge          Int
+  lowestPrice         Int
+  highestPrice        Int
+  Center              Center                @relation(fields: [centerId], references: [id])
+  StudioAmenity       StudioAmenity[]
+  StudioBreakTime     StudioBreakTime[]
+  StudioComplimentary StudioComplimentary[]
+  StudioHashTag       StudioHashTag[]
+  StudioHoliday       StudioHoliday[]
+  StudioPrecaution    StudioPrecaution[]
+  StudioPriceByHour   StudioPriceByHour[]
+
+  @@index([centerId])
+}
+
+model StudioAmenity {
+  id       BigInt @id @default(autoincrement())
+  studioId BigInt
+  content  String @db.VarChar(30)
+  Studio   Studio @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
+}
+
+model StudioBreakTime {
+  id       BigInt   @id @default(autoincrement())
+  studioId BigInt
+  date     DateTime @db.Date
+  time     DateTime @db.Time(0)
+  reason   String   @db.VarChar(200)
+  Studio   Studio   @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
+}
+
+model StudioComplimentary {
+  id       BigInt @id @default(autoincrement())
+  studioId BigInt
+  content  String @db.VarChar(30)
+  Studio   Studio @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
+}
+
+model StudioHashTag {
+  id       BigInt @id @default(autoincrement())
+  studioId BigInt
+  content  String @db.VarChar(30)
+  Studio   Studio @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
+}
+
+model StudioHoliday {
+  id       BigInt   @id @default(autoincrement())
+  studioId BigInt
+  date     DateTime @db.Date
+  reason   String   @db.VarChar(200)
+  Studio   Studio   @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
+}
+
+model StudioPrecaution {
+  id       BigInt @id @default(autoincrement())
+  studioId BigInt
+  content  String @db.VarChar(100)
+  Studio   Studio @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
+}
+
+model StudioPriceByHour {
+  id        BigInt   @id @default(autoincrement())
+  studioId  BigInt
+  updateAt  DateTime @default(now()) @db.DateTime(0)
+  dayOfWeek String   @db.VarChar(10)
+  time      DateTime @db.Time(0)
+  price     Int
+  Studio    Studio   @relation(fields: [studioId], references: [id])
+
+  @@index([studioId])
 }
