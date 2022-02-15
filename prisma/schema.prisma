@@ -56,6 +56,7 @@ model Center {
   phoneNumber             String                    @unique @db.VarChar(20)
   PlaceAdmin              PlaceAdmin                @relation(fields: [adminId], references: [id])
   CenterLookupInformation CenterLookupInformation[]
+  CenterParkingLot        CenterParkingLot?
   Studio                  Studio[]
 
   @@index([adminId])
@@ -78,15 +79,15 @@ model CenterLookupInformation {
 }
 
 model Studio {
-  id                  BigInt                @id @default(autoincrement())
+  id                  BigInt               @id @default(autoincrement())
   centerId            BigInt
-  createdAt           DateTime              @default(now()) @db.DateTime(0)
-  updateAt            DateTime              @default(now()) @db.DateTime(0)
-  name                String                @db.VarChar(40)
-  content             String                @db.Text
-  checkInNotice       String                @db.Text
-  openHours           DateTime              @db.DateTime(0)
-  closedHours         DateTime              @db.DateTime(0)
+  createdAt           DateTime             @default(now()) @db.DateTime(0)
+  updateAt            DateTime             @default(now()) @db.DateTime(0)
+  name                String               @db.VarChar(40)
+  content             String               @db.Text
+  checkInNotice       String               @db.Text
+  openHours           DateTime             @db.DateTime(0)
+  closedHours         DateTime             @db.DateTime(0)
   minimumReantalTime  Int
   rentalTimeUnit      Int
   basicOccupancy      Int
@@ -94,25 +95,26 @@ model Studio {
   overCharge          Int
   lowestPrice         Int
   highestPrice        Int
-  Center              Center                @relation(fields: [centerId], references: [id])
-  StudioAmenity       StudioAmenity[]
+  precaution          String?              @db.Text
+  Center              Center               @relation(fields: [centerId], references: [id])
+  StudioAmenity       StudioAmenity?
   StudioBreakTime     StudioBreakTime[]
-  StudioComplimentary StudioComplimentary[]
+  StudioComplimentary StudioComplimentary?
   StudioHashTag       StudioHashTag[]
   StudioHoliday       StudioHoliday[]
-  StudioPrecaution    StudioPrecaution[]
+  StudioPrecaution    StudioPrecaution?
   StudioPriceByHour   StudioPriceByHour[]
 
   @@index([centerId])
 }
 
 model StudioAmenity {
-  id       BigInt @id @default(autoincrement())
-  studioId BigInt
-  content  String @db.VarChar(30)
-  Studio   Studio @relation(fields: [studioId], references: [id])
+  studioId    BigInt      @id
+  name        String      @db.VarChar(20)
+  AmenityList AmenityList @relation(fields: [name], references: [name])
+  Studio      Studio      @relation(fields: [studioId], references: [id])
 
-  @@index([studioId])
+  @@index([name])
 }
 
 model StudioBreakTime {
@@ -127,12 +129,12 @@ model StudioBreakTime {
 }
 
 model StudioComplimentary {
-  id       BigInt @id @default(autoincrement())
-  studioId BigInt
-  content  String @db.VarChar(30)
-  Studio   Studio @relation(fields: [studioId], references: [id])
+  studioId          BigInt            @id
+  name              String            @db.VarChar(20)
+  ComplimentaryList ComplimentaryList @relation(fields: [name], references: [name])
+  Studio            Studio            @relation(fields: [studioId], references: [id])
 
-  @@index([studioId])
+  @@index([name])
 }
 
 model StudioHashTag {
@@ -155,12 +157,12 @@ model StudioHoliday {
 }
 
 model StudioPrecaution {
-  id       BigInt @id @default(autoincrement())
-  studioId BigInt
-  content  String @db.VarChar(100)
-  Studio   Studio @relation(fields: [studioId], references: [id])
+  studioId       BigInt         @id
+  name           String         @db.VarChar(20)
+  PrecautionList PrecautionList @relation(fields: [name], references: [name])
+  Studio         Studio         @relation(fields: [studioId], references: [id])
 
-  @@index([studioId])
+  @@index([name])
 }
 
 model StudioPriceByHour {
@@ -173,4 +175,38 @@ model StudioPriceByHour {
   Studio    Studio   @relation(fields: [studioId], references: [id])
 
   @@index([studioId])
+}
+
+model AmenityList {
+  name          String          @id @db.VarChar(20)
+  image         String          @db.Text
+  StudioAmenity StudioAmenity[]
+}
+
+model CenterParkingLot {
+  centerId        BigInt    @id @default(autoincrement())
+  updateAt        DateTime  @default(now()) @db.DateTime(0)
+  isAvailable     Boolean
+  isPayment       Boolean
+  paymentType     String?   @db.Char(4)
+  first           DateTime? @db.Time(0)
+  firstPayment    Int?
+  addition        DateTime? @db.Time(0)
+  additionPayment Int?
+  allDayPayment   Int?
+  oneTimePayment  Int?
+  content         String?   @db.Text
+  Center          Center    @relation(fields: [centerId], references: [id])
+}
+
+model ComplimentaryList {
+  name                String                @id @db.VarChar(20)
+  image               String?               @db.Text
+  StudioComplimentary StudioComplimentary[]
+}
+
+model PrecautionList {
+  name             String             @id @db.VarChar(20)
+  content          String             @db.Text
+  StudioPrecaution StudioPrecaution[]
 }
