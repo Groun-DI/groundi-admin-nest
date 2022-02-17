@@ -11,6 +11,7 @@ import { UserController } from './api/user/user.controller';
 import { AuthController } from './api/auth/auth.controller';
 import { CenterModule } from './api/center/center.module';
 import { AmenityModule } from './api/studio/item/amenity/amenity.module';
+import { ComplimentaryModule } from './api/studio/item/complimentary/complimentary.module';
 
 console.log(process.env.NODE_ENV);
 
@@ -24,7 +25,8 @@ console.log(process.env.NODE_ENV);
     AuthModule,
     UserModule,
     CenterModule,
-    AmenityModule
+    AmenityModule,
+    ComplimentaryModule
   ],
   controllers: [AppController],
   providers: [
