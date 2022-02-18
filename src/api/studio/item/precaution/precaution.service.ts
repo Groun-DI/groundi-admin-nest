@@ -12,9 +12,9 @@ export class PrecautionService {
   }
 
   async findAll() {
-    const complimentaries = await this.prismaService.complimentaryList.findMany();
-    if (!complimentaries) throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-    return complimentaries;
+    const precautions = await this.prismaService.precautionList.findMany();
+    if (!precautions) throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+    return precautions;
   }
 
   findOne(id: number) {
