@@ -13,8 +13,7 @@ import { CenterModule } from './api/center/center.module';
 import { AmenityModule } from './api/studio/item/amenity/amenity.module';
 import { ComplimentaryModule } from './api/studio/item/complimentary/complimentary.module';
 import { PrecautionModule } from './api/studio/item/precaution/precaution.module';
-
-console.log(process.env.NODE_ENV);
+import { StudioModule } from './api/studio/studio.module';
 
 @Module({
   imports: [
@@ -28,7 +27,8 @@ console.log(process.env.NODE_ENV);
     CenterModule,
     AmenityModule,
     ComplimentaryModule,
-    PrecautionModule
+    PrecautionModule,
+    StudioModule
   ],
   controllers: [AppController],
   providers: [

@@ -85,11 +85,11 @@ model Studio {
   updateAt            DateTime             @default(now()) @db.DateTime(0)
   name                String               @db.VarChar(40)
   content             String               @db.Text
-  checkInNotice       String               @db.Text
-  openHours           DateTime             @db.DateTime(0)
-  closedHours         DateTime             @db.DateTime(0)
-  minimumReantalTime  Int
-  rentalTimeUnit      Int
+  checkInNotice       String?              @db.Text
+  openHours           DateTime?            @db.DateTime(0)
+  closedHours         DateTime?            @db.DateTime(0)
+  minimumReantalTime  Int?
+  rentalTimeUnit      Int?
   basicOccupancy      Int
   maximumOccupancy    Int
   overCharge          Int

@@ -3,16 +3,18 @@ import { UnauthorizedException, UNAUTHORIZED_TYPE } from 'src/errors/unauthorize
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
-import { Amenity } from './entities/amenity.entity';
+import { AmenityRes } from './dto/amenity.res';
+import { Prisma } from '@prisma/client';
+import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
 
 @Injectable()
 export class AmenityService {
   constructor(private readonly prismaService: PrismaService) { }
-  create(createAmenityDto: CreateAmenityDto) {
-    return 'This action adds a new amenity';
+  async create(body: CreateAmenityDto) {
+    return `This action returns  amenity`;
   }
 
-  async findAll(): Promise<Amenity[]> {
+  async findAll(): Promise<AmenityRes[]> {
     const amenity = await this.prismaService.amenityList.findMany();
     if (!amenity) throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
     return amenity;
