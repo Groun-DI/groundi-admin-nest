@@ -3,14 +3,35 @@ import { Prisma } from '@prisma/client';
 import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
 import { UnauthorizedException, UNAUTHORIZED_TYPE } from 'src/errors/unauthorized.exception';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { CreateStudioDto } from './dto/create-precaution.dto';
-import { UpdateStudioDto } from './dto/update-precaution.dto';
+import { CreateStudioDto } from './dto/create-studio.dto';
+import { UpdateStudioDto } from './dto/update-studio.dto';
 
 @Injectable()
 export class StudioService {
   constructor(private readonly prismaService: PrismaService) { }
   async create(body: CreateStudioDto) {
     let studio: { id: number | bigint };
+
+    const createAmenities = body.amenities.map((item) => ({
+      AmenityList: {
+        connect: { id: item },
+      },
+    }
+    ));
+    const createPrecautions = body.precautions.map((item) => ({
+      PrecautionList: {
+        connect: { id: Number(item) },
+      },
+    }
+    ));
+
+    const createComplimentaries = body.complimentaries.map((item) => ({
+      ComplimentaryList: {
+        connect: { id: item },
+      },
+    }
+    ));
+
     try {
       studio = await this.prismaService.studio.create({
         data: {
@@ -21,7 +42,11 @@ export class StudioService {
           maximumOccupancy: body.maximumOccupancy,
           overCharge: body.overCharge,
           lowestPrice: body.lowestPrice,
-          highestPrice: body.highestPrice
+          highestPrice: body.highestPrice,
+          precaution: body.precaution,
+          StudioAmenity: { create: createAmenities },
+          StudioPrecaution: { create: createPrecautions },
+          StudioComplimentary: { create: createComplimentaries }
         },
         select: {
           id: true
@@ -35,7 +60,7 @@ export class StudioService {
       }
       throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
-    return Number(studio);
+    return Number(studio.id);
   }
 
   async findAll() {

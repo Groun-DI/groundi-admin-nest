@@ -1,8 +1,8 @@
 
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { StudioService } from './studio.service';
-import { CreateStudioDto } from './dto/create-precaution.dto';
-import { UpdateStudioDto } from './dto/update-precaution.dto';
+import { CreateStudioDto } from './dto/create-studio.dto';
+import { UpdateStudioDto } from './dto/update-studio.dto';
 import { JwtAuthGuard } from 'src/auth-guard/jwt/jwt.auth-guard';
 
 @UseGuards(JwtAuthGuard)

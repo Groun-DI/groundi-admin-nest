@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class JwtAuthGuard extends AuthGuard('jwt') {}
 
 export interface JwtModel {
-  phoneNumber: string;
+  password: string;
   email: string;
   id: number | bigint;
 }

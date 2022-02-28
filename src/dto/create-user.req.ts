@@ -7,20 +7,12 @@ export class CreateUserReq {
 
   @IsNotEmpty()
   @IsString()
-  readonly birthday: string;
-
-  @IsNotEmpty()
-  @IsString()
   readonly email: string;
 
   @IsNotEmpty()
   @IsString()
   readonly phoneNumber: string;
-
-  @IsNotEmpty()
-  @IsString()
-  readonly gender: string;
-
+  
   @IsNotEmpty()
   @IsString()
   readonly password: string;

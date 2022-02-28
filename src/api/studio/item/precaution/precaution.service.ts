@@ -12,8 +12,14 @@ export class PrecautionService {
   }
 
   async findAll() {
+    (BigInt.prototype as any).toJSON = function () {
+      return this.toString();
+    };
+    
     const precautions = await this.prismaService.precautionList.findMany();
     if (!precautions) throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+
+    
     return precautions;
   }
 

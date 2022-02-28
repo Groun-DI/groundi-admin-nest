@@ -39,7 +39,7 @@ export class AuthService {
       return this.authorizationService.login(
         Number(userEntity.id),
         body.email,
-        userEntity.phoneNumber,
+        userEntity.password,
       );
     } else {
       throw new UnauthorizedException(UNAUTHORIZED_TYPE.PASSWORD_NOT_MATCH);
@@ -48,25 +48,22 @@ export class AuthService {
 
   async createMember(body: CreateUserReq): Promise<TokenRes> {
     let user: { id: bigint };
-
+    console.log(body);
     try {
-      console.log(body.name);
       user = await this.prismaService.placeAdmin.create({
         data: {
           password: await this.hash(body.password),
           phoneNumber: body.phoneNumber,
           name: body.name,
-          email: body.email,
-          gender: body.gender,
-          birthday: body.birthday,
+          email: body.email
         },
         select: {
           id: true,
         },
       });
     } catch (e) {
+      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log(e.code);
         if (e.code === 'P2002')
           throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
       }
@@ -76,7 +73,7 @@ export class AuthService {
     return this.authorizationService.login(
       Number(user.id),
       body.email,
-      body.phoneNumber,
+      body.password,
     );
   }
 
@@ -84,40 +81,24 @@ export class AuthService {
     const smsRes = await this.naverSmsService.sendSms(phoneNumber).catch(() => {
       throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     });
-
-    const member = await this.prismaService.user.findFirst({
-      where: { phoneNumber: phoneNumber },
-    });
-    if (!member) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
-
     await this.cacheService.add(smsRes.phoneNum, smsRes.code);
 
     return { message: 'success' };
   }
 
-  async verifyMember(verifyDto: VerifyUserReq): Promise<TokenRes> {
+  async verifyMember(verifyDto: VerifyUserReq): Promise<{ message: string }> {
     if (
       verifyDto.code !== '010317' &&
       !(await this.cacheService.verify(verifyDto.phoneNumber, verifyDto.code))
-    )
-      throw new UnauthorizedException(UNAUTHORIZED_TYPE.CODE_NOT_MATCH);
+    )throw new UnauthorizedException(UNAUTHORIZED_TYPE.CODE_NOT_MATCH);
 
     this.cacheService.delete(verifyDto.phoneNumber);
 
-    const user = await this.prismaService.placeAdmin.findFirst({
-      where: { phoneNumber: verifyDto.phoneNumber },
-    });
-    if (!user) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
-
-    return this.authorizationService.login(
-      Number(user.id),
-      user.email,
-      user.phoneNumber,
-    );
+    return { message: 'success' };
   }
 
-  refreshToken(id: number, email: string, phoneNumber: string) {
-    return this.authorizationService.login(id, email, phoneNumber);
+  refreshToken(id: number, email: string, password: string) {
+    return this.authorizationService.login(id, email, password);
   }
 
   private hash = async (pwd: string): Promise<string> => {

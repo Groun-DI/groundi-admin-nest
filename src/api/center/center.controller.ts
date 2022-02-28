@@ -16,8 +16,8 @@ export class CenterController {
   }
 
   @Get()
-  findAll() {
-    return this.centerService.findAll();
+  findAll(@User() user: JwtModel) {
+    return this.centerService.findAll(user.id);
   }
 
   @Get(':id')

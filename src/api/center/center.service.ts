@@ -25,10 +25,12 @@ export class CenterService {
     try {
       center = await this.prismaService.center.create({
         data: {
-          adminId: id,
+          adminId: Number(id),
           name: body.name,
           address: body.address,
-          phoneNumber: body.phoneNumber
+          phoneNumber: body.phoneNumber,
+          latitude: 1.1,
+          longitude: 2.2
         },
         select: {
           id: true
@@ -45,8 +47,27 @@ export class CenterService {
     return { message: "success" }
   }
 
-  findAll() {
-    return `This action returns all center`;
+  async findAll(id: number | bigint) {
+    (BigInt.prototype as any).toJSON = function () {
+      return parseInt(this.toString());
+    };
+    try {
+      const centers = this.prismaService.center.findMany({
+        where: {
+          adminId: id
+        }
+      });
+      console.log(centers);
+
+      return centers;
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002')
+          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+      }
+      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    }
   }
 
   findOne(id: number) {

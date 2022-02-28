@@ -1,4 +1,4 @@
 export interface AmenityRes {
-    name: string;
+    id: string;
     image: string;
 }

@@ -27,7 +27,7 @@ export class AuthController {
   }
 
   @Post('/phoneNumber-verify')
-  async verifyAuthNumber(@Body() body: VerifyUserReq): Promise<TokenRes> {
+  async verifyAuthNumber(@Body() body: VerifyUserReq): Promise<{ message: string }> {
     console.log(body);
     return this.authService.verifyMember(body);
   }
@@ -42,13 +42,13 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post('/refresh')
   refreshToken(@User() user: JwtModel) {
-    if (!user.phoneNumber || !user.id)
+    if (!user.password || !user.id)
       throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 
     return this.authService.refreshToken(
       Number(user.id),
       user.email,
-      user.phoneNumber,
+      user.password,
     );
   }
 }
