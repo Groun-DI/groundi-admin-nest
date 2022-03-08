@@ -18,8 +18,6 @@ export class UserService {
     const member = await this.prismaService.placeAdmin.findUnique({
       where: { id: id },
     });
-    console.log("member!!");
-    console.log(member);
     if (!member) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 
     return member;

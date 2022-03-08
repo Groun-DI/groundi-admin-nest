@@ -12,12 +12,14 @@ import {
   FORBIDDEN_TYPE,
   ForbiddenException,
 } from '../../errors/forbidden.exception';
+import { NaverGeocodingService } from 'src/services/naver-geocoding/naver-geocoding.service';
 
 @Injectable()
 export class CenterService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly authorizationService: AuthorizationService,
+    private readonly naverGeocodingService: NaverGeocodingService
   ) { }
 
   async create(id: number | bigint, body: CreateCenterDto) {
@@ -29,9 +31,10 @@ export class CenterService {
           name: body.name,
           address: body.address,
           phoneNumber: body.phoneNumber,
-          latitude: 1.1,
-          longitude: 2.2
-        },
+          detailAddress: body.detailAddress,
+          latitude: Number(body.latitude),
+          longitude: Number(body.longitude)
+  },
         select: {
           id: true
         }
@@ -68,6 +71,14 @@ export class CenterService {
       }
       throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
+  }
+
+  async getGeoCodingService(address: string): Promise<any> {
+    const smsRes = await this.naverGeocodingService.sendAdress(address).catch(() => {
+      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    });
+
+    return smsRes;
   }
 
   findOne(id: number) {

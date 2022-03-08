@@ -10,10 +10,11 @@ import { UserModule } from './api/user/user.module';
 import { UserController } from './api/user/user.controller';
 import { AuthController } from './api/auth/auth.controller';
 import { CenterModule } from './api/center/center.module';
-import { AmenityModule } from './api/studio/item/amenity/amenity.module';
-import { ComplimentaryModule } from './api/studio/item/complimentary/complimentary.module';
-import { PrecautionModule } from './api/studio/item/precaution/precaution.module';
+import { AmenityModule } from './api/amenity/amenity.module';
+import { ComplimentaryModule } from './api/complimentary/complimentary.module';
+import { PrecautionModule } from './api/precaution/precaution.module';
 import { StudioModule } from './api/studio/studio.module';
+import { NaverGeocodingModule } from './services/naver-geocoding/naver-geocoding.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { StudioModule } from './api/studio/studio.module';
     AmenityModule,
     ComplimentaryModule,
     PrecautionModule,
-    StudioModule
+    StudioModule,
+    NaverGeocodingModule
   ],
   controllers: [AppController],
   providers: [

@@ -5,6 +5,7 @@ import { UnauthorizedException, UNAUTHORIZED_TYPE } from 'src/errors/unauthorize
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateStudioDto } from './dto/create-studio.dto';
 import { UpdateStudioDto } from './dto/update-studio.dto';
+import { Studio as StudioModel } from '@prisma/client';
 
 @Injectable()
 export class StudioService {
@@ -63,8 +64,14 @@ export class StudioService {
     return Number(studio.id);
   }
 
-  async findAll() {
-    return `This action returns a precaution`;
+  async findAll(centerId: number):Promise<StudioModel[]> {
+    const studios = await this.prismaService.studio.findMany({
+      where: { centerId: centerId },
+    });
+    
+    if (!studios) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
+
+    return studios;
   }
 
   findOne(id: number) {

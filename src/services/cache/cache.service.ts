@@ -17,8 +17,6 @@ export class CacheService {
       ttl: 60 * 3,
     });
 
-    console.log(res);
-
     return true;
   }
 

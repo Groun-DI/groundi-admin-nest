@@ -28,14 +28,11 @@ export class AuthController {
 
   @Post('/phoneNumber-verify')
   async verifyAuthNumber(@Body() body: VerifyUserReq): Promise<{ message: string }> {
-    console.log(body);
     return this.authService.verifyMember(body);
   }
 
   @Get('/:phoneNumber')
-  async getAuthNumber(
-    @Param('phoneNumber') phoneNumber: string,
-  ): Promise<{ message: string }> {
+  async 909(@Param('phoneNumber') phoneNumber: string): Promise<{ message: string }> {
     return this.authService.getAuthCode(phoneNumber);
   }
 

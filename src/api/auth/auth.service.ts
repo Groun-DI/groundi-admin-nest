@@ -48,14 +48,14 @@ export class AuthService {
 
   async createMember(body: CreateUserReq): Promise<TokenRes> {
     let user: { id: bigint };
-    console.log(body);
     try {
       user = await this.prismaService.placeAdmin.create({
         data: {
           password: await this.hash(body.password),
           phoneNumber: body.phoneNumber,
           name: body.name,
-          email: body.email
+          email: body.email,
+          profileImage: body.profileImage
         },
         select: {
           id: true,

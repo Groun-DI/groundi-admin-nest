@@ -16,6 +16,10 @@ export class CreateUserReq {
   @IsNotEmpty()
   @IsString()
   readonly password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly profileImage: string;
 }
 
 export class AuthNumberDto {

@@ -34,4 +34,10 @@ export class CenterController {
   remove(@Param('id') id: string) {
     return this.centerService.remove(+id);
   }
+
+  @Get('/:address')
+  async 909(@Param('address') address: string): Promise<any> {
+    return this.centerService.getGeoCodingService(address);
+  }
+
 }

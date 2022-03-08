@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCenterDto {
     @IsNotEmpty()
@@ -8,6 +8,18 @@ export class CreateCenterDto {
     @IsNotEmpty()
     @IsString()
     readonly address: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly detailAddress: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly latitude: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly longitude: number;
 
     @IsNotEmpty()
     @IsString()
