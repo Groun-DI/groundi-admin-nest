@@ -44,7 +44,6 @@ export class StudioService {
           overCharge: body.overCharge,
           lowestPrice: body.lowestPrice,
           highestPrice: body.highestPrice,
-          precaution: body.precaution,
           StudioAmenity: { create: createAmenities },
           StudioPrecaution: { create: createPrecautions },
           StudioComplimentary: { create: createComplimentaries }

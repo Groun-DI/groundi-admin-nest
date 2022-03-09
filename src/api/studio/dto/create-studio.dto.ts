@@ -35,10 +35,6 @@ export class CreateStudioDto {
     readonly highestPrice: number;
 
     @IsNotEmpty()
-    @IsString()
-    readonly precaution: string;
-
-    @IsNotEmpty()
     @IsArray()
     readonly amenities: string[];
 

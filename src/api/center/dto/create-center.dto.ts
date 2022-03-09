@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCenterDto {
     @IsNotEmpty()
@@ -24,4 +24,46 @@ export class CreateCenterDto {
     @IsNotEmpty()
     @IsString()
     readonly phoneNumber: string;
+}
+
+export class CreateCenterParkingLotDto {
+    @IsNotEmpty()
+    @IsNumber()
+    readonly centerId: number;
+
+    @IsNotEmpty()
+    @IsBoolean()
+    readonly isAvailable: boolean;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly paymentType: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly firstTime: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly firstPayment: number;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly additionTime: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly additionPayment: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly allDayPayment: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly oneTimePayment: number;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly content: string;
 }

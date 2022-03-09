@@ -90,17 +90,13 @@ model Studio {
   name                String                @db.VarChar(40)
   content             String                @db.Text
   checkInNotice       String?               @db.Text
-  openHours           DateTime?             @db.DateTime(0)
-  closedHours         DateTime?             @db.DateTime(0)
-  minimumReantalTime  Int?
-  rentalTimeUnit      Int?
   basicOccupancy      Int
   maximumOccupancy    Int
   overCharge          Int
   lowestPrice         Int
   highestPrice        Int
-  precaution          String?               @db.Text
   Center              Center                @relation(fields: [centerId], references: [id])
+  StudioRentalTime    StudioRentalTime?
   StudioAmenity       StudioAmenity[]
   StudioBreakTime     StudioBreakTime[]
   StudioComplimentary StudioComplimentary[]
@@ -110,6 +106,18 @@ model Studio {
   StudioPriceByHour   StudioPriceByHour[]
 
   @@index([centerId])
+}
+
+model StudioRentalTime {
+    id       BigInt   @id @default(autoincrement())
+    studioId BigInt
+    openHours           DateTime             @db.DateTime(0)
+    closedHours         DateTime             @db.DateTime(0)
+    minimumReantalTime  Int
+    rentalTimeUnit      Int
+    Studio   Studio   @relation(fields: [studioId], references: [id])
+
+    @@index([studioId])
 }
 
 model StudioBreakTime {
@@ -158,11 +166,10 @@ model CenterParkingLot {
   centerId        BigInt    @id @default(autoincrement())
   updateAt        DateTime  @default(now()) @db.DateTime(0)
   isAvailable     Boolean
-  isPayment       Boolean
   paymentType     String?   @db.Char(4)
-  first           DateTime? @db.Time(0)
+  firstTime       DateTime? @db.Time(0)
   firstPayment    Int?
-  addition        DateTime? @db.Time(0)
+  additionTime    DateTime? @db.Time(0)
   additionPayment Int?
   allDayPayment   Int?
   oneTimePayment  Int?

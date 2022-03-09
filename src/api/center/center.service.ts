@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthorizationService } from 'src/services/authorization/authorization.service';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { CreateCenterDto } from './dto/create-center.dto';
+import { CreateCenterDto, CreateCenterParkingLotDto } from './dto/create-center.dto';
 import { UpdateCenterDto } from './dto/update-center.dto';
 import { Prisma } from '@prisma/client';
 import {
@@ -34,9 +34,40 @@ export class CenterService {
           detailAddress: body.detailAddress,
           latitude: Number(body.latitude),
           longitude: Number(body.longitude)
-  },
+        },
         select: {
           id: true
+        }
+      })
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002')
+          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+      }
+      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    }
+    return { message: "success" }
+  }
+
+  async parkingLotCreate(body: CreateCenterParkingLotDto) {
+    let resData: { centerId: number | bigint};
+    try {
+      resData = await this.prismaService.centerParkingLot.create({
+        data: {
+          centerId: Number(body.centerId),
+          isAvailable: body.isAvailable,
+          paymentType: body.paymentType,
+          firstTime: body.firstTime,
+          firstPayment: Number(body.firstPayment),
+          additionTime: body.additionTime,
+          additionPayment: Number(body.additionPayment),
+          allDayPayment: Number(body.allDayPayment),
+          oneTimePayment: Number(body.oneTimePayment),
+          content: body.content
+        },
+        select: {
+          centerId: true
         }
       })
     } catch (e) {
