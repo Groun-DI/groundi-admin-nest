@@ -41,6 +41,7 @@ export class StudioService {
           content: body.content,
           basicOccupancy: body.basicOccupancy,
           maximumOccupancy: body.maximumOccupancy,
+          refundCode: body.refundCode,
           overCharge: body.overCharge,
           lowestPrice: body.lowestPrice,
           highestPrice: body.highestPrice,

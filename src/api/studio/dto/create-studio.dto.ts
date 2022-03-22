@@ -45,4 +45,9 @@ export class CreateStudioDto {
     @IsNotEmpty()
     @IsArray()
     readonly complimentaries: string[];
+
+
+    @IsNotEmpty()
+    @IsString()
+    readonly refundCode: string;
 }

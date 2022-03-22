@@ -85,6 +85,7 @@ model CenterLookupInformation {
 model Studio {
   id                  BigInt                @id @default(autoincrement())
   centerId            BigInt
+  refundCode          String                @db.VarChar(15)
   createdAt           DateTime              @default(now()) @db.DateTime(0)
   updateAt            DateTime              @default(now()) @db.DateTime(0)
   name                String                @db.VarChar(40)
@@ -96,7 +97,6 @@ model Studio {
   lowestPrice         Int
   highestPrice        Int
   Center              Center                @relation(fields: [centerId], references: [id])
-  StudioRentalTime    StudioRentalTime?
   StudioAmenity       StudioAmenity[]
   StudioBreakTime     StudioBreakTime[]
   StudioComplimentary StudioComplimentary[]
@@ -104,20 +104,21 @@ model Studio {
   StudioHoliday       StudioHoliday[]
   StudioPrecaution    StudioPrecaution[]
   StudioPriceByHour   StudioPriceByHour[]
+  StudioRentalTime    StudioRentalTime?
 
   @@index([centerId])
 }
 
 model StudioRentalTime {
-    id       BigInt   @id @default(autoincrement())
-    studioId BigInt
-    openHours           DateTime             @db.DateTime(0)
-    closedHours         DateTime             @db.DateTime(0)
-    minimumReantalTime  Int
-    rentalTimeUnit      Int
-    Studio   Studio   @relation(fields: [studioId], references: [id])
+  id                 BigInt   @id @default(autoincrement())
+  studioId           BigInt   @unique
+  openHours          DateTime @db.DateTime(0)
+  closedHours        DateTime @db.DateTime(0)
+  minimumReantalTime Int
+  rentalTimeUnit     Int
+  Studio             Studio   @relation(fields: [studioId], references: [id])
 
-    @@index([studioId])
+  @@index([studioId])
 }
 
 model StudioBreakTime {
@@ -167,13 +168,13 @@ model CenterParkingLot {
   updateAt        DateTime  @default(now()) @db.DateTime(0)
   isAvailable     Boolean
   paymentType     String?   @db.Char(4)
-  firstTime       DateTime? @db.Time(0)
   firstPayment    Int?
-  additionTime    DateTime? @db.Time(0)
   additionPayment Int?
   allDayPayment   Int?
   oneTimePayment  Int?
   content         String?   @db.Text
+  additionTime    DateTime? @db.Time(0)
+  firstTime       DateTime? @db.Time(0)
   Center          Center    @relation(fields: [centerId], references: [id])
 }
 
@@ -239,4 +240,17 @@ model Payment {
   User       User      @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Payment_userId_fkey")
+}
+
+model RefundCode {
+  id      String   @id @db.VarChar(15)
+  name    String   @db.VarChar(60)
+  content String
+  Day7  Int
+  Day6  Int
+  Day5  Int
+  Day4  Int
+  Day3  Int
+  Day2  Int
+  Day   Int
 }
