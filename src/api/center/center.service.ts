@@ -52,32 +52,32 @@ export class CenterService {
 
   async parkingLotCreate(body: CreateCenterParkingLotDto) {
     let resData: { centerId: number | bigint};
-    try {
-      resData = await this.prismaService.centerParkingLot.create({
-        data: {
-          centerId: Number(body.centerId),
-          isAvailable: body.isAvailable,
-          paymentType: body.paymentType,
-          firstTime: body.firstTime,
-          firstPayment: Number(body.firstPayment),
-          additionTime: body.additionTime,
-          additionPayment: Number(body.additionPayment),
-          allDayPayment: Number(body.allDayPayment),
-          oneTimePayment: Number(body.oneTimePayment),
-          content: body.content
-        },
-        select: {
-          centerId: true
-        }
-      })
-    } catch (e) {
-      console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-      }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
-    }
+    // try {
+    //   resData = await this.prismaService.centerParkingLot.create({
+    //     data: {
+    //       centerId: Number(body.centerId),
+    //       isAvailable: body.isAvailable,
+    //       paymentType: body.paymentType,
+    //       firstHour: body.fir,
+    //       firstPayment: Number(body.firstPayment),
+    //       additionTime: body.additionTime,
+    //       additionPayment: Number(body.additionPayment),
+    //       allDayPayment: Number(body.allDayPayment),
+    //       oneTimePayment: Number(body.oneTimePayment),
+    //       content: body.content
+    //     },
+    //     select: {
+    //       centerId: true
+    //     }
+    //   })
+    // } catch (e) {
+    //   console.log(e);
+    //   if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    //     if (e.code === 'P2002')
+    //       throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+    //   }
+    //   throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    // }
     return { message: "success" }
   }
 

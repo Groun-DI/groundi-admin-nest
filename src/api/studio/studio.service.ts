@@ -45,12 +45,29 @@ export class StudioService {
           overCharge: body.overCharge,
           lowestPrice: body.lowestPrice,
           highestPrice: body.highestPrice,
+          precautionContent: body.precautionContent,
           StudioAmenity: { create: createAmenities },
           StudioPrecaution: { create: createPrecautions },
-          StudioComplimentary: { create: createComplimentaries }
+          StudioComplimentary: { create: createComplimentaries },
         },
         select: {
           id: true
+        }
+      });
+
+      await this.prismaService.centerParkingLot.create({
+        data:{
+          isAvailable: body.parkingIsAvailable,
+          paymentType: body.parkingPaymentType,
+          firstHour: body.parkingFirstHour,
+          firstMinute: body.parkingFirstMinute,
+          firstPayment: body.parkingFirstPayment,
+          additionHour: body.parkingAdditionHour,
+          additionMinute: body.parkingAdditionMinute,
+          additionPayment: body.parkingAdditionPayment,
+          allDayPayment: body.parkingAllDayPayment,
+          oneTimePayment: body.parkingOneTimePayment,
+          content: body.parkingContent
         }
       })
     } catch (e) {

@@ -91,6 +91,7 @@ model Studio {
   name                String                @db.VarChar(40)
   content             String                @db.Text
   checkInNotice       String?               @db.Text
+  precautionContent   String?               @db.Text
   basicOccupancy      Int
   maximumOccupancy    Int
   overCharge          Int
@@ -173,8 +174,10 @@ model CenterParkingLot {
   allDayPayment   Int?
   oneTimePayment  Int?
   content         String?   @db.Text
-  additionTime    DateTime? @db.Time(0)
-  firstTime       DateTime? @db.Time(0)
+  additionHour    String?   @db.VarChar(6)
+  firstHour       String?   @db.VarChar(6)
+  additionMinute  String?   @db.VarChar(4)
+  firstMinute     String?   @db.VarChar(4)
   Center          Center    @relation(fields: [centerId], references: [id])
 }
 

@@ -1,5 +1,5 @@
 
-import { IsNotEmpty, IsNumber, IsString, IsEmpty, IsArray } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsEmpty, IsArray, IsBoolean } from 'class-validator';
 
 export class CreateStudioDto {
     @IsNotEmpty()
@@ -46,8 +46,46 @@ export class CreateStudioDto {
     @IsArray()
     readonly complimentaries: string[];
 
-
     @IsNotEmpty()
     @IsString()
     readonly refundCode: string;
+
+    @IsString()
+    readonly precautionContent: string;
+
+    @IsNotEmpty()
+    @IsBoolean()
+    readonly parkingIsAvailable: boolean;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly parkingPaymentType: string;
+
+    @IsString()
+    readonly parkingFirstHour: string;
+
+    @IsString()
+    readonly parkingFirstMinute: string;
+
+    @IsNumber()
+    readonly parkingFirstPayment: number;
+
+    @IsString()
+    readonly parkingAdditionHour: string;
+
+    @IsString()
+    readonly parkingAdditionMinute: string;
+
+    @IsNumber()
+    readonly parkingAdditionPayment: number;
+
+    @IsNumber()
+    readonly parkingAllDayPayment: number;
+
+    @IsNumber()
+    readonly parkingOneTimePayment: number;
+
+    @IsString()
+    readonly parkingContent: string;
+
 }
