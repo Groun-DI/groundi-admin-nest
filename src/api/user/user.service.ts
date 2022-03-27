@@ -11,10 +11,6 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) { }
 
   async getMember(id: number | bigint): Promise<PlaceAdminModel> {
-    (BigInt.prototype as any).toJSON = function () {
-      return parseInt(this.toString());
-    };
-
     const member = await this.prismaService.placeAdmin.findUnique({
       where: { id: id },
     });
