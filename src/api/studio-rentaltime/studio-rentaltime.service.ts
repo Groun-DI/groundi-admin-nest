@@ -14,8 +14,8 @@ export class StudioRentaltimeService {
             data = await this.prismaService.studioRentalTime.create({
                 data: {
                     studioId: body.studioId,
-                    openHours: body.openHours,
-                    closedHours: body.closedHours,
+                    openTime: body.openTime,
+                    closeTime: body.closeTime,
                     minimumReantalTime: body.minimumReantalTime,
                     rentalTimeUnit: body.rentalTimeUnit
                 },
@@ -47,8 +47,8 @@ export class StudioRentaltimeService {
                 },
                 data: {
                     studioId: body.studioId,
-                    openHours: body.openHours,
-                    closedHours: body.closedHours,
+                    openTime: body.openTime,
+                    closeTime: body.closeTime,
                     minimumReantalTime: body.minimumReantalTime,
                     rentalTimeUnit: body.rentalTimeUnit
                 },

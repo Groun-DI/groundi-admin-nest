@@ -7,11 +7,11 @@ export class CreateRentalTimeDto {
 
     @IsNotEmpty()
     @IsString()
-    readonly openHours: string
+    readonly openTime: string
 
     @IsNotEmpty()
     @IsString()
-    readonly closedHours: string
+    readonly closeTime: string
 
     @IsNotEmpty()
     @IsNumber()

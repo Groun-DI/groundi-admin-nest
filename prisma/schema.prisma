@@ -85,18 +85,18 @@ model CenterLookupInformation {
 model Studio {
   id                  BigInt                @id @default(autoincrement())
   centerId            BigInt
-  refundCode          String                @db.VarChar(15)
   createdAt           DateTime              @default(now()) @db.DateTime(0)
   updateAt            DateTime              @default(now()) @db.DateTime(0)
   name                String                @db.VarChar(40)
   content             String                @db.Text
   checkInNotice       String?               @db.Text
-  precautionContent   String?               @db.Text
   basicOccupancy      Int
   maximumOccupancy    Int
   overCharge          Int
   lowestPrice         Int
   highestPrice        Int
+  refundCode          String                @db.VarChar(15)
+  precautionContent   String?               @db.Text
   Center              Center                @relation(fields: [centerId], references: [id])
   StudioAmenity       StudioAmenity[]
   StudioBreakTime     StudioBreakTime[]
@@ -113,8 +113,8 @@ model Studio {
 model StudioRentalTime {
   id                 BigInt   @id @default(autoincrement())
   studioId           BigInt   @unique
-  openHours          DateTime @db.DateTime(0)
-  closedHours        DateTime @db.DateTime(0)
+  openTime           DateTime @db.Timestamp(0)
+  closeTime          DateTime @db.Timestamp(0)
   minimumReantalTime Int
   rentalTimeUnit     Int
   Studio             Studio   @relation(fields: [studioId], references: [id])
@@ -165,20 +165,20 @@ model StudioPriceByHour {
 }
 
 model CenterParkingLot {
-  centerId        BigInt    @id @default(autoincrement())
-  updateAt        DateTime  @default(now()) @db.DateTime(0)
+  centerId        BigInt   @id @default(autoincrement())
+  updateAt        DateTime @default(now()) @db.DateTime(0)
   isAvailable     Boolean
-  paymentType     String?   @db.Char(4)
+  paymentType     String?  @db.Char(4)
   firstPayment    Int?
   additionPayment Int?
   allDayPayment   Int?
   oneTimePayment  Int?
-  content         String?   @db.Text
-  additionHour    String?   @db.VarChar(6)
-  firstHour       String?   @db.VarChar(6)
-  additionMinute  String?   @db.VarChar(4)
-  firstMinute     String?   @db.VarChar(4)
-  Center          Center    @relation(fields: [centerId], references: [id])
+  content         String?  @db.Text
+  additionHour    String?  @db.VarChar(6)
+  additionMinute  String?  @db.VarChar(4)
+  firstHour       String?  @db.VarChar(6)
+  firstMinute     String?  @db.VarChar(4)
+  Center          Center   @relation(fields: [centerId], references: [id])
 }
 
 model StudioAmenity {
@@ -246,14 +246,14 @@ model Payment {
 }
 
 model RefundCode {
-  id      String   @id @db.VarChar(15)
-  name    String   @db.VarChar(60)
+  id      String @id @db.VarChar(15)
+  name    String @db.VarChar(60)
   content String
-  Day7  Int
-  Day6  Int
-  Day5  Int
-  Day4  Int
-  Day3  Int
-  Day2  Int
-  Day   Int
+  Day7    Int
+  Day6    Int
+  Day5    Int
+  Day4    Int
+  Day3    Int
+  Day2    Int
+  Day     Int
 }
