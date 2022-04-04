@@ -18,6 +18,7 @@ import { NaverGeocodingModule } from './services/naver-geocoding/naver-geocoding
 import { RefundCodeModule } from './api/refundCode/refundCode.module';
 import { StudioRentaltimeModule } from './api/studio-rentaltime/studio-rentaltime.module';
 import { StudioBreaktimeModule } from './api/studio-breaktime/studio-breaktime.module';
+import { StudioHolidayModule } from './api/studio-holiday/studio-holiday.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { StudioBreaktimeModule } from './api/studio-breaktime/studio-breaktime.m
     RefundCodeModule,
     NaverGeocodingModule,
     StudioRentaltimeModule,
-    StudioBreaktimeModule
+    StudioBreaktimeModule,
+    StudioHolidayModule
   ],
   controllers: [AppController],
   providers: [

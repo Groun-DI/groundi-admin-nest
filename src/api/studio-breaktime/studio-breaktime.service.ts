@@ -12,9 +12,9 @@ export class StudioBreaktimeService {
             data = await this.prismaService.studioBreakTime.create({
                 data: {
                     studioId: body.studioId,
-                    date: body.date,
-                    time: body.time,
-                    reason: body.reason
+                    week: body.week,
+                    startTime: body.startTime,
+                    endTime: body.endTime,
                 },
                 select: {
                     id: true
@@ -28,11 +28,18 @@ export class StudioBreaktimeService {
     }
 
     async findAll(studioId: number): Promise<StudioBreakTimeModel[]> {
-        const data = await this.prismaService.studioBreakTime.findMany({
-            where: {
-                studioId: studioId
-            }
-        });
+        let data;
+        
+        try{
+            data = await this.prismaService.studioBreakTime.findMany({
+                where: {
+                    studioId: studioId
+                }
+            });
+        }catch(e){
+            console.log(e);
+        }
+        
 
         return data;
     }
