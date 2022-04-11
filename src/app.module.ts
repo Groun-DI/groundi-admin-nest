@@ -19,6 +19,7 @@ import { RefundCodeModule } from './api/refundCode/refundCode.module';
 import { StudioRentaltimeModule } from './api/studio-rentaltime/studio-rentaltime.module';
 import { StudioBreaktimeModule } from './api/studio-breaktime/studio-breaktime.module';
 import { StudioHolidayModule } from './api/studio-holiday/studio-holiday.module';
+import { TempStudioModule } from './api/tempStudio/tempStudio.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StudioHolidayModule } from './api/studio-holiday/studio-holiday.module'
     ComplimentaryModule,
     PrecautionModule,
     StudioModule,
+    TempStudioModule,
     RefundCodeModule,
     NaverGeocodingModule,
     StudioRentaltimeModule,
