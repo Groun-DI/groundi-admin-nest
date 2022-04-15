@@ -17,9 +17,9 @@ import { StudioModule } from './api/studio/studio.module';
 import { NaverGeocodingModule } from './services/naver-geocoding/naver-geocoding.module';
 import { RefundCodeModule } from './api/refundCode/refundCode.module';
 import { StudioRentaltimeModule } from './api/studio-rentaltime/studio-rentaltime.module';
-import { StudioBreaktimeModule } from './api/studio-breaktime/studio-breaktime.module';
 import { StudioHolidayModule } from './api/studio-holiday/studio-holiday.module';
 import { TempStudioModule } from './api/tempStudio/tempStudio.module';
+import { StudioOpenStatusPerWeekModule } from './api/studio-open-status-per-week/studio-open-status-per-week.module';
 
 @Module({
   imports: [
@@ -39,8 +39,8 @@ import { TempStudioModule } from './api/tempStudio/tempStudio.module';
     RefundCodeModule,
     NaverGeocodingModule,
     StudioRentaltimeModule,
-    StudioBreaktimeModule,
-    StudioHolidayModule
+    StudioHolidayModule,
+    StudioOpenStatusPerWeekModule
   ],
   controllers: [AppController],
   providers: [
