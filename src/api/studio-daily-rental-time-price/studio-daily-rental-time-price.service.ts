@@ -33,6 +33,15 @@ export class StudioDailyRentalTimePriceService {
     return data;
   }
 
+  async findOne(dayOfweek: string) {
+    const data = await this.prismaService.studioDailyRentalTimePrice.findMany({
+      
+    });
+
+    return data;
+    
+  }
+
   async remove(weekId: number) {
     try {
       await this.prismaService.studioDailyRentalTimePrice.deleteMany({

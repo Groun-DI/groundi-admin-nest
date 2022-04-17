@@ -2,6 +2,7 @@
 import { IsNotEmpty, IsNumber, IsString, IsEmpty, IsArray, IsBoolean } from 'class-validator';
 
 export class CreateStudioDto {
+
     @IsNotEmpty()
     @IsNumber()
     readonly centerId: number;
@@ -12,7 +13,7 @@ export class CreateStudioDto {
 
     @IsNotEmpty()
     @IsString()
-    readonly content: string;
+    readonly introduction: string;
 
     @IsNotEmpty()
     @IsNumber()
@@ -24,15 +25,15 @@ export class CreateStudioDto {
 
     @IsNotEmpty()
     @IsNumber()
-    readonly overCharge: number;
+    readonly extraPrice: number;
 
     @IsNotEmpty()
     @IsNumber()
-    readonly lowestPrice: number;
+    readonly minimumRentalPrice: number;
 
     @IsNotEmpty()
     @IsNumber()
-    readonly highestPrice: number;
+    readonly maximumRentalPrice: number;
 
     @IsNotEmpty()
     @IsArray()
@@ -87,5 +88,9 @@ export class CreateStudioDto {
 
     @IsString()
     readonly parkingContent: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly rentalTimeUnitCode : string;
 
 }

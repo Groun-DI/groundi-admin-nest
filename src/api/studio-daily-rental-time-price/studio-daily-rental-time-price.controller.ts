@@ -5,7 +5,7 @@ import { UpdateStudioDailyRentalTimePriceDto } from './dto/update-studio-daily-r
 
 @Controller('studio-daily-rental-time-price')
 export class StudioDailyRentalTimePriceController {
-  constructor(private readonly studioDailyRentalTimePriceService: StudioDailyRentalTimePriceService) {}
+  constructor(private readonly studioDailyRentalTimePriceService: StudioDailyRentalTimePriceService) { }
 
   @Post()
   create(@Body() createStudioDailyRentalTimePriceDto: CreateStudioDailyRentalTimePriceDto) {
@@ -15,6 +15,11 @@ export class StudioDailyRentalTimePriceController {
   @Get()
   findAll() {
     return this.studioDailyRentalTimePriceService.findAll();
+  }
+
+  @Get(':dayOfweek')
+  findOne(@Param('dayOfweek') dayOfweek: string) {
+    return this.studioDailyRentalTimePriceService.findOne(dayOfweek);
   }
 
   @Delete(':weekId')
