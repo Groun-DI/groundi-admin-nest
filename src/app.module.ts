@@ -15,12 +15,8 @@ import { ComplimentaryModule } from './api/complimentary/complimentary.module';
 import { PrecautionModule } from './api/precaution/precaution.module';
 import { StudioModule } from './api/studio/studio.module';
 import { NaverGeocodingModule } from './services/naver-geocoding/naver-geocoding.module';
-import { RefundCodeModule } from './api/refundCode/refundCode.module';
-import { StudioHolidayModule } from './api/studio-holiday/studio-holiday.module';
 import { TempStudioModule } from './api/tempStudio/tempStudio.module';
-import { StudioOpenStatusPerWeekModule } from './api/rental-time-management/rental-time-management.module';
-import { StudioDailyRentalTimePriceModule } from './api/studio-daily-rental-time-price/studio-daily-rental-time-price.module';
-
+import { RentalTimeManagementModule } from './api/rental-time-management/rental-time-management.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,11 +32,8 @@ import { StudioDailyRentalTimePriceModule } from './api/studio-daily-rental-time
     PrecautionModule,
     StudioModule,
     TempStudioModule,
-    RefundCodeModule,
     NaverGeocodingModule,
-    StudioHolidayModule,
-    StudioOpenStatusPerWeekModule,
-    StudioDailyRentalTimePriceModule
+    RentalTimeManagementModule
   ],
   controllers: [AppController],
   providers: [

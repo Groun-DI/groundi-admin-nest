@@ -9,7 +9,12 @@ async function bootstrap() {
   const config: ConfigService = app.get(ConfigService);
   const host = config.get<string>('SERVER_HOST');
   const port = config.get<number>('SERVER_PORT');
-  setBigIntParser()
+
+  //bigint serialisation
+  (BigInt.prototype as any).toJSON = function () {
+    return this.toString()
+  }
+
   app
     .useGlobalPipes(
       new ValidationPipe({
@@ -23,9 +28,6 @@ async function bootstrap() {
 
   await app.listen(port, host);
 }
-  
-function setBigIntParser() {
-  (BigInt.prototype as any).toJSON = () => parseInt(this.toString());
-}
+
 
 bootstrap().then(() => console.log('RUNNING SERVER...'));
