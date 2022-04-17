@@ -12,9 +12,19 @@ import { Studio as StudioModel } from '@prisma/client';
 export class StudioController {
   constructor(private readonly studioService: StudioService) { }
 
-  @Post('/create')
-  create(@Body() createPrecautionDto: CreateStudioDto) {
-    return this.studioService.create(createPrecautionDto);
+  @Post()
+  studioCreate() {
+    return this.studioService.studioCreate();
+  }
+
+  @Post('/tmp-studio')
+  tmepStudioCreate() {
+    return this.studioService.tmepStudioCreate();
+  }
+
+  @Post('/:studioId/image')
+  studioImageCreate(@Body() createPrecautionDto: CreateStudioDto) {
+    return this.studioService.studioImageCreate(createPrecautionDto);
   }
 
   @Get(':centerId')
