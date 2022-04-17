@@ -84,27 +84,27 @@ model CenterLookupInformation {
 }
 
 model Studio {
-  id                      BigInt                    @id @default(autoincrement())
-  centerId                BigInt
-  createdAt               DateTime                  @default(now()) @db.DateTime(0)
-  updateAt                DateTime                  @default(now()) @db.DateTime(0)
-  name                    String                    @db.VarChar(40)
-  introduction            String                    @db.Text
-  checkInNotice           String?                   @db.Text
-  basicOccupancy          Int
-  maximumOccupancy        Int
-  extraPrice              Int
-  minimumRentalPrice      Int
-  maximumRentalPrice      Int
-  rentalTimeUnitCode      String                    @db.VarChar(10)
-  refundCode              String                    @db.VarChar(10)
-  Center                  Center                    @relation(fields: [centerId], references: [id])
-  StudioAmenity           StudioAmenity[]
-  StudioComplimentary     StudioComplimentary[]
-  StudioHashTag           StudioHashTag[]
-  StudioHoliday           StudioHoliday[]
-  StudioOpenStatusPerWeek StudioOpenStatusPerWeek[]
-  StudioPrecaution        StudioPrecaution[]
+  id                  BigInt                @id @default(autoincrement())
+  centerId            BigInt
+  createdAt           DateTime              @default(now()) @db.DateTime(0)
+  updateAt            DateTime              @default(now()) @db.DateTime(0)
+  name                String                @db.VarChar(40)
+  introduction        String                @db.Text
+  checkInNotice       String?               @db.Text
+  basicOccupancy      Int
+  maximumOccupancy    Int
+  extraPrice          Int
+  minimumRentalPrice  Int
+  maximumRentalPrice  Int
+  rentalTimeUnitCode  String                @db.VarChar(10)
+  refundCode          String                @db.VarChar(10)
+  Center              Center                @relation(fields: [centerId], references: [id])
+  StudioAmenity       StudioAmenity[]
+  StudioComplimentary StudioComplimentary[]
+  StudioDailyStatus   StudioDailyStatus[]
+  StudioHashTag       StudioHashTag[]
+  StudioHoliday       StudioHoliday[]
+  StudioPrecaution    StudioPrecaution[]
 
   @@index([centerId])
 }
@@ -278,26 +278,26 @@ model TempStudioPrecaution {
   @@index([precautionId])
 }
 
-model StudioDailyRentalTimePrice {
-  id                      BigInt                  @id @default(autoincrement())
-  weekId                  BigInt
-  createdAt               DateTime                @default(now()) @db.DateTime(0)
-  startAt                 DateTime                @db.Time(0)
-  price                   Int
-  StudioOpenStatusPerWeek StudioOpenStatusPerWeek @relation(fields: [weekId], references: [id], onDelete: NoAction, map: "StudioDailyRentalTimePrice_ibfk_1")
+model StudioDailyRentalPrice {
+  id                BigInt            @id @default(autoincrement())
+  dailyStatusId     BigInt
+  createdAt         DateTime          @default(now()) @db.DateTime(0)
+  startAt           DateTime          @db.Time(0)
+  price             Int
+  StudioDailyStatus StudioDailyStatus @relation(fields: [dailyStatusId], references: [id], onDelete: NoAction, map: "StudioDailyRentalPrice_ibfk_1")
 
-  @@index([weekId], map: "weekId")
+  @@index([dailyStatusId], map: "dailyStatusId")
 }
 
-model StudioOpenStatusPerWeek {
-  id                         BigInt                       @id
-  studioId                   BigInt
-  createdAt                  DateTime                     @default(now()) @db.DateTime(0)
-  updateAt                   DateTime                     @default(now()) @db.DateTime(0)
-  dayOfweek                  String                       @db.VarChar(10)
-  isOpen                     Boolean
-  Studio                     Studio                       @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioOpenStatusPerWeek_ibfk_1")
-  StudioDailyRentalTimePrice StudioDailyRentalTimePrice[] @ignore
+model StudioDailyStatus {
+  id                     BigInt                   @id @default(autoincrement())
+  studioId               BigInt
+  createdAt              DateTime                 @default(now()) @db.DateTime(0)
+  updateAt               DateTime                 @default(now()) @db.DateTime(0)
+  dayOfweek              String                   @db.VarChar(10)
+  isOpen                 Boolean
+  Studio                 Studio                   @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioDailyStatus_ibfk_1")
+  StudioDailyRentalPrice StudioDailyRentalPrice[]
 
   @@index([studioId], map: "studioId")
 }

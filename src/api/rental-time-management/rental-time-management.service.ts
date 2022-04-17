@@ -37,7 +37,7 @@ export class RentalTimeManagementService {
     let generatedId: { id: bigint };
 
     try {
-      generatedId = await this.prismaService.studioOpenStatusPerWeek.create({
+      generatedId = await this.prismaService.studioDailyStatus.create({
         data: {
           studioId: studioId,
           dayOfweek: body.dayOfweek,
@@ -58,9 +58,9 @@ export class RentalTimeManagementService {
     let generatedId: { id: bigint };
 
     try {
-      generatedId = await this.prismaService.studioDailyRentalTimePrice.create({
+      generatedId = await this.prismaService.studioDailyRentalPrice.create({
         data: {
-          weekId: body.dailyStatusId,
+          dailyStatusId: body.dailyStatusId,
           startAt: body.startAt,
           price: body.price
         },
@@ -103,8 +103,8 @@ export class RentalTimeManagementService {
 
   async dailyRentalPriceDelete(dailyStatusId: number) {
     try {
-      await this.prismaService.studioDailyRentalTimePrice.deleteMany({
-        where: { weekId: dailyStatusId }
+      await this.prismaService.studioDailyRentalPrice.deleteMany({
+        where: { dailyStatusId: dailyStatusId }
       })
     } catch (e) {
       console.log(e);
@@ -129,7 +129,7 @@ export class RentalTimeManagementService {
   }
 
   async dailyStatusFindAll() {
-    const data = await this.prismaService.studioOpenStatusPerWeek.findMany();
+    const data = await this.prismaService.studioDailyStatus.findMany();
 
     return `This action returns all studioOpenStatusPerWeek`;
   }
@@ -139,13 +139,13 @@ export class RentalTimeManagementService {
   }
 
   async dailyRentalPriceFindAll() {
-    const data = await this.prismaService.studioDailyRentalTimePrice.findMany();
+    const data = await this.prismaService.studioDailyRentalPrice.findMany();
 
     return data;
   }
 
-  async dailyRentalTimePriceFindOne() {
-    const data = await this.prismaService.studioDailyRentalTimePrice.findMany({
+  async dailyRentalPriceFindOne() {
+    const data = await this.prismaService.studioDailyRentalPrice.findMany({
 
     });
 

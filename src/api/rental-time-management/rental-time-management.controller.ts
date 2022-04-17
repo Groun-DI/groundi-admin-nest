@@ -72,7 +72,7 @@ export class RentalTimeManagementController {
 
   @Get('daily-rental-price/:dailyId')
   dailyRentalTimePriceFindOne(@Param('id') id: string) {
-    return this.rentalTimeManagementService.dailyRentalTimePriceFindOne();
+    return this.rentalTimeManagementService.dailyRentalPriceFindOne();
   }
 
 }
