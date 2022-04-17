@@ -1,14 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { CreateStudioOpenStatusPerWeekDto } from './dto/create-studio-open-status-per-week.dto';
-import { UpdateStudioOpenStatusPerWeekDto } from './dto/update-studio-open-status-per-week.dto';
+import { StudioHoliday as StudioHolidayModel } from '@prisma/client';
 
 @Injectable()
 export class RentalTimeManagementService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async holidayCreate() {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async holidayCreate(body: CreateHolidayDto) {
+    let data: { id: bigint };
+    try {
+      data = await this.prismaService.studioHoliday.create({
+        data: {
+          studioId: body.studioId,
+          date: body.date,
+          reason: body.reason,
+        },
+        select: {
+          id: true
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    }
+
+    return data;
   }
 
   async dailyStautsCreate() {
@@ -30,16 +46,54 @@ export class RentalTimeManagementService {
     //   console.log(e);
     // }
 
-  
+
     return `This action returns all studioOpenStatusPerWeek`;
   }
 
-  async dailyRentalTimePriceCreate() {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async dailyRentalTimePriceCreate(createStudioDailyRentalTimePriceDto: CreateStudioDailyRentalTimePriceDto) {
+    let generatedId: { id: bigint };
+
+    try {
+      generatedId = await this.prismaService.studioDailyRentalTimePrice.create({
+        data: {
+          weekId: createStudioDailyRentalTimePriceDto.weekId,
+          startAt: createStudioDailyRentalTimePriceDto.startAt,
+          price: createStudioDailyRentalTimePriceDto.price
+        },
+        select: {
+          id: true
+        }
+      })
+    } catch (e) {
+      console.log(e);
+    }
+
+    return 'This action adds a new studioDailyRentalTimePrice';
   }
 
-  async holidayUpdate() {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async holidayUpdate(id: number, body: UpdateHolidayDto) {
+    let data: { id: bigint };
+
+    try {
+      data = await this.prismaService.studioHoliday.update({
+        where: {
+          id: id
+        },
+        data: {
+          studioId: body.studioId,
+          date: body.date,
+          reason: body.reason
+        },
+        select: {
+          id: true
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    }
+
+    return data;
   }
 
   async dailyStautsUpdate() {
@@ -50,16 +104,32 @@ export class RentalTimeManagementService {
     return `This action returns all studioOpenStatusPerWeek`;
   }
 
-  async dailyRentalTimePriceDelete() {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async dailyRentalTimePriceDelete(dailyId: number) {
+    try {
+      await this.prismaService.studioDailyRentalTimePrice.deleteMany({
+        where: { weekId: dailyId }
+      })
+    } catch (e) {
+      console.log(e);
+    }
+
+    return `This action removes a #${dailyId} studioDailyRentalTimePrice`;
   }
 
   async holidayFindAll() {
     return `This action returns all studioOpenStatusPerWeek`;
   }
 
-  async holidayFindOne() {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async holidayFindOne(studioId: number, datetime: string): Promise<StudioHolidayModel> {
+    const data = await this.prismaService.studioHoliday.findFirst({
+      where: {
+        date: datetime,
+        studioId: studioId
+      }
+    });
+
+    return data;
+
   }
 
   async dailyStatusFindAll() {
@@ -73,10 +143,16 @@ export class RentalTimeManagementService {
   }
 
   async dailyRentalTimePriceFindAll() {
-    return `This action returns all studioOpenStatusPerWeek`;
+    const data = await this.prismaService.studioDailyRentalTimePrice.findMany();
+
+    return data;
   }
 
   async dailyRentalTimePriceFindOne() {
-    return `This action returns all studioOpenStatusPerWeek`;
+    const data = await this.prismaService.studioDailyRentalTimePrice.findMany({
+      
+    });
+
+    return data;
   }
 }
