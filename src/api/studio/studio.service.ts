@@ -3,14 +3,16 @@ import { Prisma } from '@prisma/client';
 import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
 import { UnauthorizedException, UNAUTHORIZED_TYPE } from 'src/errors/unauthorized.exception';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { CreateStudioDto } from './dto/create-studio.dto';
-import { UpdateStudioDto } from './dto/update-studio.dto';
 import { Studio as StudioModel } from '@prisma/client';
+import { StudioCreateBody } from 'src/dto/studio-create.body';
+import { StudioImageCreateBody } from 'src/dto/studio-image-create';
+import { StudioUpdateBody } from 'src/dto/studio-update';
+import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
 
 @Injectable()
 export class StudioService {
   constructor(private readonly prismaService: PrismaService) { }
-  async create(body: CreateStudioDto) {
+  async studioCreate(centerId: number, body: StudioCreateBody) {
     let studio: { id: number | bigint };
 
     const createAmenities = body.amenities.map((item) => ({
@@ -36,9 +38,10 @@ export class StudioService {
     try {
       studio = await this.prismaService.studio.create({
         data: {
-          centerId: body.centerId,
+          centerId: centerId,
           name: body.name,
-          introduction: body.introduction,
+          checkInNotice: body.checkInNotice,
+          description: body.description,
           basicOccupancy: body.basicOccupancy,
           maximumOccupancy: body.maximumOccupancy,
           refundCode: body.refundCode,
@@ -55,21 +58,21 @@ export class StudioService {
         }
       });
 
-      await this.prismaService.centerParkingLot.create({
-        data:{
-          isAvailable: body.parkingIsAvailable,
-          paymentType: body.parkingPaymentType,
-          firstHour: body.parkingFirstHour,
-          firstMinute: body.parkingFirstMinute,
-          firstPayment: body.parkingFirstPayment,
-          additionHour: body.parkingAdditionHour,
-          additionMinute: body.parkingAdditionMinute,
-          additionPayment: body.parkingAdditionPayment,
-          allDayPayment: body.parkingAllDayPayment,
-          oneTimePayment: body.parkingOneTimePayment,
-          content: body.parkingContent
-        }
-      })
+      // await this.prismaService.centerParkingLot.create({
+      //   data: {
+      //     isAvailable: body.parkingIsAvailable,
+      //     paymentType: body.parkingPaymentType,
+      //     firstHour: body.parkingFirstHour,
+      //     firstMinute: body.parkingFirstMinute,
+      //     firstPayment: body.parkingFirstPayment,
+      //     additionHour: body.parkingAdditionHour,
+      //     additionMinute: body.parkingAdditionMinute,
+      //     additionPayment: body.parkingAdditionPayment,
+      //     allDayPayment: body.parkingAllDayPayment,
+      //     oneTimePayment: body.parkingOneTimePayment,
+      //     content: body.parkingContent
+      //   }
+      // })
     } catch (e) {
       console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -78,28 +81,42 @@ export class StudioService {
       }
       throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
+    
     return Number(studio.id);
   }
 
-  async findAll(centerId: number):Promise<StudioModel[]> {
+  studioImageCreate(studioId: number, body: StudioImageCreateBody) {
+    return '';
+  }
+
+
+  studioUpdate(studioId: number, body: StudioUpdateBody) {
+    return '';
+  }
+
+  studioImageUpdate(studioId: number, body: StudioImageUpdateBody) {
+    return '';
+  }
+
+  studioDelete(studioId: number) {
+    return '';
+  }
+
+  studioImageDelete(studioId: number) {
+    return '';
+  }
+
+  async studioFindAll(centerId: number) {
     const studios = await this.prismaService.studio.findMany({
       where: { centerId: centerId },
     });
-    
+
     if (!studios) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 
     return studios;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} precaution`;
-  }
-
-  update(id: number, updateStudioDto: UpdateStudioDto) {
-    return `This action updates a #${id} precaution`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} precaution`;
+  studioFindOne(studioId: number) {
+    return '';
   }
 }

@@ -89,7 +89,7 @@ model Studio {
   createdAt           DateTime              @default(now()) @db.DateTime(0)
   updateAt            DateTime              @default(now()) @db.DateTime(0)
   name                String                @db.VarChar(40)
-  introduction        String                @db.Text
+  description         String                @db.Text
   checkInNotice       String?               @db.Text
   basicOccupancy      Int
   maximumOccupancy    Int
