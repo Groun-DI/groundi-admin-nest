@@ -47,7 +47,7 @@ export class TempStudioService {
           highestPrice: body.highestPrice,
           precautionContent: body.precautionContent,
           TempStudioAmenity: { create: createAmenities },
-          TempStudioPrecaution: { create: createPrecautions },
+          // TempStudioPrecaution: { create: createPrecautions },
           TempStudioComplimentary: { create: createComplimentaries },
         },
         select: {

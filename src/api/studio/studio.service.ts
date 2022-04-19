@@ -8,6 +8,10 @@ import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioImageCreateBody } from 'src/dto/studio-image-create';
 import { StudioUpdateBody } from 'src/dto/studio-update';
 import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
+import { AnyAaaaRecord } from 'dns';
+import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
+import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
+import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 
 @Injectable()
 export class StudioService {
@@ -23,7 +27,7 @@ export class StudioService {
 
     const createPrecautions = body.precautions.map((item) => ({
       PrecautionList: {
-        connect: { id: Number(item) },
+        connect: { id: item },
       },
     }));
 
@@ -68,10 +72,51 @@ export class StudioService {
     return '';
   }
 
+  async amenityUpdate(studioId: number, body: AmenityUpdateBody[]) {
+    await this.prismaService.studioAmenity.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
+      if (res) {
+        await Promise.all(body.map((item) => {
+          this.prismaService.studioAmenity.create({
+            data: {
+              studioId: studioId,
+              amenityId: item.amenityId
+            }
+          });
+        }))
+      }
+    });
+  }
+
+  async precautionUpdate(studioId: number, body: PrecautionUpdateBody[]) {
+    await this.prismaService.studioPrecaution.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
+      if (res) {
+        await Promise.all(body.map((item) => {
+          this.prismaService.studioPrecaution.create({
+            data: {
+              studioId: studioId,
+              precautionId: item.precautionId
+            }
+          });
+        }))
+      }
+    });
+  }
+
+  async complimentaryUpdate(studioId: number, body: ComplimentaryUpdateBody[]) {
+    await this.prismaService.studioComplimentary.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
+      await Promise.all(body.map((item) => {
+        this.prismaService.studioComplimentary.create({
+          data: {
+            studioId: studioId,
+            complimentaryId: item.complimentaryId
+          }
+        });
+      }))
+    });
+  }
 
   async studioUpdate(studioId: number, body: StudioUpdateBody) {
     let studio: StudioModel;
-
     try {
       studio = await this.prismaService.studio.update({
         where: { id: studioId },
@@ -99,32 +144,44 @@ export class StudioService {
     return studio;
   }
 
-  studioAmenityUpdate(body: string[]) {
-    body.map((item) => ({
-      AmenityList: {
-        connect: { id: item },
-      },
-    }));
-  }
-
-  studioPrecautionUpdate(body: string[]) {
+  async studioAmenityDelte(studioId: number) {
 
   }
 
-  studioComplimentaryUpdate(body: string[]) {
+  async studioPrecautionDelete(studioId: number) {
+    await this.prismaService.studioPrecaution.deleteMany({
+      where: {
+        studioId: studioId
+      }
+    })
+  }
 
+  async studioComplimentaryDelete(studioId: number) {
+    await this.prismaService.studioComplimentary.deleteMany({
+      where: {
+        studioId: studioId
+      }
+    })
   }
 
   studioImageUpdate(studioId: number, body: StudioImageUpdateBody) {
     return '';
   }
 
-  studioDelete(studioId: number) {
-    return '';
+  async studioDelete(studioId: number) {
+    const studio = await this.prismaService.studio.deleteMany({
+      where: { id: studioId }
+    });
+
+    return studio;
   }
 
-  studioImageDelete(studioId: number) {
-    return '';
+  async studioImageDelete(imageId: number) {
+    const studio = await this.prismaService.studioImage.delete({
+      where: { id: imageId }
+    });
+
+    return studio;
   }
 
   async studioFindAll(centerId: number) {
@@ -137,7 +194,16 @@ export class StudioService {
     return studios;
   }
 
-  studioFindOne(studioId: number) {
-    return '';
+  async studioFindOne(studioId: number): Promise<StudioModel> {
+    const studio = await this.prismaService.studio.findUnique({
+      where: { id: studioId },
+      include: {
+        StudioComplimentary: true,
+        StudioAmenity: true,
+        StudioPrecaution: true
+      }
+    });
+
+    return studio;
   }
 }

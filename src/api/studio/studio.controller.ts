@@ -6,6 +6,9 @@ import { Studio as StudioModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioImageCreateBody } from 'src/dto/studio-image-create';
 import { StudioUpdateBody } from 'src/dto/studio-update';
+import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
+import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
+import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 
 
 @Controller('studio')
@@ -24,8 +27,23 @@ export class StudioController {
   // }
 
   @Patch(':studioId')
-  studioUpdate(@Param('studioId') studioId: number, @Body() body: StudioUpdateBody){
+  studioUpdate(@Param('studioId') studioId: number, @Body() body: StudioUpdateBody) {
     return this.studioService.studioUpdate(+studioId, body);
+  }
+
+  @Patch(':studioId/amenity')
+  amenityUpdate(@Param('studioId') studioId: number, @Body() body: AmenityUpdateBody[]) {
+    return this.studioService.amenityUpdate(+studioId, body);
+  }
+
+  @Patch(':studioId/complimentary')
+  complimentaryUpdate(@Param('studioId') studioId: number, @Body() body: ComplimentaryUpdateBody[]) {
+    return this.studioService.complimentaryUpdate(+studioId, body);
+  }
+
+  @Patch(':studioId/precaution')
+  precautionUpdate(@Param('studioId') studioId: number, @Body() body: PrecautionUpdateBody[]) {
+    return this.studioService.precautionUpdate(+studioId, body);
   }
 
   // @Patch(':studioId/image')
@@ -38,19 +56,19 @@ export class StudioController {
   //   return this.studioService.studioDelete(+studioId);
   // }
 
-  // @Delete('image/:imageId')
-  // studioImageDelete(@Param('imageId') imageId: number) {
-  //   return this.studioService.studioImageDelete(+imageId);
-  // }
+  @Delete('image/:imageId')
+  studioImageDelete(@Param('imageId') imageId: number) {
+    return this.studioService.studioImageDelete(+imageId);
+  }
 
   // @Get(':centerId')
   // studioFindAll(@Param('centerId') centerId: number) {
   //   return this.studioService.studioFindAll(+centerId);
   // }
 
-  // @Get(':studioId')
-  // studioFindOne(@Param('studioId') studioId: string) {
-  //   return this.studioService.studioFindOne(+studioId);
-  // }
+  @Get(':studioId')
+  studioFindOne(@Param('studioId') studioId: string): Promise<StudioModel> {
+    return this.studioService.studioFindOne(+studioId);
+  }
 
 }

@@ -104,6 +104,7 @@ model Studio {
   StudioDailyStatus   StudioDailyStatus[]
   StudioHashTag       StudioHashTag[]
   StudioHoliday       StudioHoliday[]
+  StudioImage         StudioImage[]
   StudioPrecaution    StudioPrecaution[]
 
   @@index([centerId])
@@ -167,12 +168,12 @@ model StudioComplimentary {
 
 model StudioPrecaution {
   studioId       BigInt
-  precautionId   BigInt
-  PrecautionList PrecautionList @relation(fields: [precautionId], references: [id])
-  Studio         Studio         @relation(fields: [studioId], references: [id])
+  precautionId   String         @db.VarChar(10)
+  PrecautionList PrecautionList @relation(fields: [precautionId], references: [id], onDelete: NoAction, map: "StudioPrecaution_ibfk_2")
+  Studio         Studio         @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioPrecaution_ibfk_1")
 
   @@id([studioId, precautionId])
-  @@index([precautionId])
+  @@index([precautionId], map: "precautionId")
 }
 
 model AmenityList {
@@ -190,10 +191,12 @@ model ComplimentaryList {
 }
 
 model PrecautionList {
-  id                   BigInt                 @id @default(autoincrement())
-  content              String
-  StudioPrecaution     StudioPrecaution[]
-  TempStudioPrecaution TempStudioPrecaution[]
+  id               String             @id @db.VarChar(10)
+  name             String             @db.VarChar(30)
+  description      String             @db.VarChar(200)
+  createAt         DateTime           @default(now()) @db.DateTime(0)
+  updateAt         DateTime           @default(now()) @db.DateTime(0)
+  StudioPrecaution StudioPrecaution[]
 }
 
 model Payment {
@@ -243,7 +246,6 @@ model TempStudio {
   Center                  Center                    @relation(fields: [centerId], references: [id])
   TempStudioAmenity       TempStudioAmenity[]
   TempStudioComplimentary TempStudioComplimentary[]
-  TempStudioPrecaution    TempStudioPrecaution[]
 
   @@index([centerId])
 }
@@ -268,16 +270,6 @@ model TempStudioComplimentary {
   @@index([complimentaryId])
 }
 
-model TempStudioPrecaution {
-  studioId       BigInt
-  precautionId   BigInt
-  PrecautionList PrecautionList @relation(fields: [precautionId], references: [id])
-  TempStudio     TempStudio     @relation(fields: [studioId], references: [id])
-
-  @@id([studioId, precautionId])
-  @@index([precautionId])
-}
-
 model StudioDailyRentalPrice {
   id                BigInt            @id @default(autoincrement())
   dailyStatusId     BigInt
@@ -298,6 +290,17 @@ model StudioDailyStatus {
   isOpen                 Boolean
   Studio                 Studio                   @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioDailyStatus_ibfk_1")
   StudioDailyRentalPrice StudioDailyRentalPrice[]
+
+  @@index([studioId], map: "studioId")
+}
+
+model StudioImage {
+  id       BigInt   @id @default(autoincrement())
+  studioId BigInt
+  createAt DateTime @default(now()) @db.DateTime(0)
+  order    Int
+  image    String   @db.Text
+  Studio   Studio   @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioImage_ibfk_1")
 
   @@index([studioId], map: "studioId")
 }
