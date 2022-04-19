@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DailyRentalPriceCreateBody } from 'src/dto/daily-rental-price-create.body';
 import { DailyStatusCreateBody } from 'src/dto/daily-status-create.body';
 import { DailyStatusUpdateBody } from 'src/dto/daily-status-update.body';
-import { HolidayCreateBody } from 'src/dto/holiday-create.body';
+import { HolidayCreateBody } from 'src/dto/holiday-create-body';
+import { HolidayDeleteBody } from 'src/dto/holiday-delete.body';
 import { HolidayUpdateBody } from 'src/dto/holiday-update.body';
 import { RentalTimeManagementService } from './rental-time-management.service';
 
@@ -36,8 +37,8 @@ export class RentalTimeManagementController {
   }
 
   @Delete('holiday/:holidayId')
-  holidayDelete(@Param('holidayId') holidayId: number) {
-    return this.rentalTimeManagementService.holidayDelete(holidayId);
+  holidayDelete(@Param('holidayId') holidayId: number, @Body() body: HolidayDeleteBody) {
+    return this.rentalTimeManagementService.holidayDelete(holidayId, body);
   }
 
   @Delete('daily-rental-price/:dailyStatusId')
@@ -46,8 +47,8 @@ export class RentalTimeManagementController {
   }
 
   @Get('holiday')
-  holidayFindAll() {
-    return this.rentalTimeManagementService.holidayFindAll();
+  holidayFindAll(@Param('studioId') studioId: number) {
+    return this.rentalTimeManagementService.holidayFindAll(+studioId);
   }
 
   @Get('holiday/:holidayId')

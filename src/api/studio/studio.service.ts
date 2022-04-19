@@ -8,7 +8,6 @@ import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioImageCreateBody } from 'src/dto/studio-image-create';
 import { StudioUpdateBody } from 'src/dto/studio-update';
 import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
-import { AnyAaaaRecord } from 'dns';
 import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
 import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
@@ -142,26 +141,6 @@ export class StudioService {
       throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
     return studio;
-  }
-
-  async studioAmenityDelte(studioId: number) {
-
-  }
-
-  async studioPrecautionDelete(studioId: number) {
-    await this.prismaService.studioPrecaution.deleteMany({
-      where: {
-        studioId: studioId
-      }
-    })
-  }
-
-  async studioComplimentaryDelete(studioId: number) {
-    await this.prismaService.studioComplimentary.deleteMany({
-      where: {
-        studioId: studioId
-      }
-    })
   }
 
   studioImageUpdate(studioId: number, body: StudioImageUpdateBody) {

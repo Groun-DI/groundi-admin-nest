@@ -2,29 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { StudioHoliday as StudioHolidayModel } from '@prisma/client';
 import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
-import { HolidayCreateBody } from 'src/dto/holiday-create.body';
+import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { DailyStatusCreateBody } from 'src/dto/daily-status-create.body';
 import { DailyRentalPriceCreateBody } from 'src/dto/daily-rental-price-create.body';
 import { HolidayUpdateBody } from 'src/dto/holiday-update.body';
 import { DailyStatusUpdateBody } from 'src/dto/daily-status-update.body';
+import { start } from 'repl';
 
 @Injectable()
 export class RentalTimeManagementService {
   constructor(private readonly prismaService: PrismaService) { }
 
   async holidayCreate(studioId: number, body: HolidayCreateBody) {
+    let date = new Date(body.startDate);
+    let endDate = new Date(body.endDate);
     let data: { id: bigint };
+
     try {
-      data = await this.prismaService.studioHoliday.create({
-        data: {
-          studioId: studioId,
-          date: body.date,
-          reason: body.reason,
-        },
-        select: {
-          id: true
-        }
-      });
+      for (date; date <= endDate; date.setDate(date.getDate() + 1)) {
+        data = await this.prismaService.studioHoliday.create({
+          data: {
+            studioId: studioId,
+            date: date,
+            reason: body.reason,
+          },
+          select: {
+            id: true
+          }
+        });
+      }
     } catch (e) {
       console.log(e);
       throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
@@ -32,6 +38,7 @@ export class RentalTimeManagementService {
 
     return data;
   }
+
 
   async dailyStautsCreate(studioId: number, body: DailyStatusCreateBody) {
     let generatedId: { id: bigint };
@@ -97,8 +104,25 @@ export class RentalTimeManagementService {
     return `This action returns all studioOpenStatusPerWeek`;
   }
 
-  async holidayDelete(holidayId: number) {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async holidayDelete(studioId: number, body: HolidayCreateBody) {
+    let date = new Date(body.startDate);
+    let endDate = new Date(body.endDate);
+
+    try {
+      for (date; date <= endDate; date.setDate(date.getDate() + 1)) {
+        await this.prismaService.studioHoliday.deleteMany({
+          where: {
+            studioId: studioId,
+            date: date,
+          }
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    }
+
+    return { "message": "success" };
   }
 
   async dailyRentalPriceDelete(dailyStatusId: number) {
@@ -113,8 +137,14 @@ export class RentalTimeManagementService {
     return `This action removes a #${dailyStatusId} studioDailyRentalTimePrice`;
   }
 
-  async holidayFindAll() {
-    return `This action returns all studioOpenStatusPerWeek`;
+  async holidayFindAll(studioId: number) {
+    const data = await this.prismaService.studioHoliday.findMany({
+      where: {
+        studioId: studioId
+      }
+    });
+
+    return data;
   }
 
   async holidayFindOne(dailyStatusId: number): Promise<StudioHolidayModel> {
