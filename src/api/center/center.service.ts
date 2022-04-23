@@ -5,8 +5,7 @@ import { CreateCenterDto, CreateCenterParkingLotDto } from './dto/create-center.
 import { UpdateCenterDto } from './dto/update-center.dto';
 import { Prisma } from '@prisma/client';
 import {
-  FORBIDDEN_TYPE,
-  ForbiddenException,
+  BaseBizException, Exceptions
 } from '../../errors/http-exceptions';
 import { NaverGeocodingService } from 'src/services/naver-geocoding/naver-geocoding.service';
 
@@ -37,17 +36,12 @@ export class CenterService {
       })
     } catch (e) {
       console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-      }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
     return { message: "success" }
   }
 
   async parkingLotCreate(body: CreateCenterParkingLotDto) {
-    let resData: { centerId: number | bigint};
+    let resData: { centerId: number | bigint };
     // try {
     //   resData = await this.prismaService.centerParkingLot.create({
     //     data: {
@@ -92,17 +86,17 @@ export class CenterService {
       return centers;
     } catch (e) {
       console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-      }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      //   if (e.code === 'P2002')
+      //     throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+      // }
+      // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
   }
 
   async getGeoCodingService(address: string): Promise<any> {
     const smsRes = await this.naverGeocodingService.sendAdress(address).catch(() => {
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+      // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     });
 
     return smsRes;

@@ -9,6 +9,7 @@ import { StudioUpdateBody } from 'src/dto/studio-update';
 import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
 import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
+import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
 
 
 @Controller('center/:centerId/studio')
@@ -47,7 +48,7 @@ export class StudioController {
   }
 
   @Put(':studioId/image')
-  studioImageUpdate(@Param('studioId') studioId: number, @Body() body: StudioImageCreateBody) {
+  studioImageUpdate(@Param('studioId') studioId: number, @Body() body: StudioImageUpdateBody) {
     return this.studioService.studioImageUpdate(+studioId, body);
   }
 

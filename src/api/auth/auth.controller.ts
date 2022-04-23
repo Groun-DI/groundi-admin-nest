@@ -6,10 +6,6 @@ import { JwtRefreshAuthGuard } from '../../auth-guard/jwt-refresh/jwt-refresh.au
 import { JwtModel } from '../../auth-guard/jwt/jwt.auth-guard';
 import { User } from '../../decorators/user.decorator';
 import { TokenRes } from '../../dto/token.res';
-import {
-  UNAUTHORIZED_TYPE,
-  UnauthorizedException,
-} from '../../errors/unauthorized.exception';
 import { LoginReq } from '../../dto/login.req';
 
 @Controller('/auth')
@@ -39,8 +35,8 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post('/refresh')
   refreshToken(@User() user: JwtModel) {
-    if (!user.password || !user.id)
-      throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
+    // if (!user.password || !user.id)
+    //   throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
 
     return this.authService.refreshToken(
       Number(user.id),

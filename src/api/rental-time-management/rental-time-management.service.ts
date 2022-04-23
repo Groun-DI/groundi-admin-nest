@@ -7,7 +7,6 @@ import { DailyStatusCreateBody } from 'src/dto/daily-status-create.body';
 import { DailyRentalPriceCreateBody } from 'src/dto/daily-rental-price-create.body';
 import { HolidayUpdateBody } from 'src/dto/holiday-update.body';
 import { DailyStatusUpdateBody } from 'src/dto/daily-status-update.body';
-import { start } from 'repl';
 
 @Injectable()
 export class RentalTimeManagementService {

@@ -7,7 +7,7 @@ export class BaseBizException extends HttpException {
 }
 export class Exceptions {
   // STUDIO
-  static CREATE_STUDIO_FAILED = new Exceptions('SO0000', '스튜디오 생성에 실패했습니다', 403);
+  static CREATE_STUDIO_FAILED = new Exceptions('SO0000', '스튜디오 생성에 실패했습니다', 400);
   static STUDIO_NOTFOUND = new Exceptions('SO0002', '스튜디오를 찾을 수 없습니다', 404);
   
 

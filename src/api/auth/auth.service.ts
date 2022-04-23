@@ -8,12 +8,7 @@ import { CreateUserReq } from '../../dto/create-user.req';
 import { TokenRes } from '../../dto/token.res';
 import { Prisma } from '@prisma/client';
 import {
-  UNAUTHORIZED_TYPE,
-  UnauthorizedException,
-} from '../../errors/unauthorized.exception';
-import {
-  FORBIDDEN_TYPE,
-  ForbiddenException,
+  BaseBizException, Exceptions
 } from '../../errors/http-exceptions';
 import * as bcrypt from 'bcrypt';
 import { LoginReq } from '../../dto/login.req';
@@ -32,8 +27,8 @@ export class AuthService {
       where: { email: body.email },
       select: { id: true, password: true, phoneNumber: true },
     });
-    if (!userEntity)
-      throw new UnauthorizedException(UNAUTHORIZED_TYPE.EMAIL_NOT_MATCH);
+    // if (!userEntity)
+    //   throw new UnauthorizedException(UNAUTHORIZED_TYPE.EMAIL_NOT_MATCH);
 
     if (await this.compare(body.password, userEntity.password)) {
       return this.authorizationService.login(
@@ -42,7 +37,7 @@ export class AuthService {
         userEntity.password,
       );
     } else {
-      throw new UnauthorizedException(UNAUTHORIZED_TYPE.PASSWORD_NOT_MATCH);
+      // throw new UnauthorizedException(UNAUTHORIZED_TYPE.PASSWORD_NOT_MATCH);
     }
   }
 
@@ -63,11 +58,11 @@ export class AuthService {
       });
     } catch (e) {
       console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-      }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      //   if (e.code === 'P2002')
+      //     throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+      // }
+      // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
 
     return this.authorizationService.login(
@@ -79,7 +74,7 @@ export class AuthService {
 
   async getAuthCode(phoneNumber: string): Promise<{ message: string }> {
     const smsRes = await this.naverSmsService.sendSms(phoneNumber).catch(() => {
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+      throw new BaseBizException(Exceptions.TYPE_ERR);
     });
     await this.cacheService.add(smsRes.phoneNum, smsRes.code);
 
@@ -90,7 +85,9 @@ export class AuthService {
     if (
       verifyDto.code !== '010317' &&
       !(await this.cacheService.verify(verifyDto.phoneNumber, verifyDto.code))
-    )throw new UnauthorizedException(UNAUTHORIZED_TYPE.CODE_NOT_MATCH);
+    )
+    
+    // throw new UnauthorizedException(UNAUTHORIZED_TYPE.CODE_NOT_MATCH);
 
     this.cacheService.delete(verifyDto.phoneNumber);
 

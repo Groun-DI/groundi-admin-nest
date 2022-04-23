@@ -13,49 +13,54 @@ import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 
 @Injectable()
 export class StudioService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(
+    private readonly prismaService: PrismaService
+  ) { }
 
-  async studioCreate(centerId: number, body: StudioCreateBody): Promise<StudioModel> {
-    const studio = await this.prismaService.studio.create({
-      data: {
-        centerId: centerId,
-        name: body.name,
-        checkInNotice: body.checkInNotice,
-        description: body.description,
-        basicOccupancy: body.basicOccupancy,
-        maximumOccupancy: body.maximumOccupancy,
-        refundCode: body.refundCode,
-        extraPrice: body.extraPrice,
-        minimumRentalPrice: body.minimumRentalPrice,
-        maximumRentalPrice: body.maximumRentalPrice,
-        rentalTimeUnitCode: body.rentalTimeUnitCode,
-        StudioAmenity: {
-          create:
-            body.amenities.map((item) => ({
-              AmenityList: {
+  async studioCreate(centerId: number, body: StudioCreateBody) {
+    try {
+      const studio = await this.prismaService.studio.create({
+        data: {
+          centerId: centerId,
+          name: body.name,
+          checkInNotice: body.checkInNotice,
+          description: body.description,
+          basicOccupancy: body.basicOccupancy,
+          maximumOccupancy: body.maximumOccupancy,
+          refundCode: body.refundCode,
+          extraPrice: body.extraPrice,
+          minimumRentalPrice: body.minimumRentalPrice,
+          maximumRentalPrice: body.maximumRentalPrice,
+          rentalTimeUnitCode: body.rentalTimeUnitCode,
+          StudioAmenity: {
+            create:
+              body.amenities.map((item) => ({
+                AmenityList: {
+                  connect: { id: item },
+                },
+              }))
+          },
+          StudioPrecaution: {
+            create: body.precautions.map((item) => ({
+              PrecautionList: {
                 connect: { id: item },
               },
             }))
-        },
-        StudioPrecaution: {
-          create: body.precautions.map((item) => ({
-            PrecautionList: {
-              connect: { id: item },
-            },
-          }))
-        },
-        StudioComplimentary: {
-          create: body.complimentaries.map((item) => ({
-            ComplimentaryList: {
-              connect: { id: item },
-            },
-          }))
-        },
-      }
-    });
-    if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
+          },
+          StudioComplimentary: {
+            create: body.complimentaries.map((item) => ({
+              ComplimentaryList: {
+                connect: { id: item },
+              },
+            }))
+          },
+        }
+      });
+    } catch (e) {
+      console.log("잘못 입력했습니다");
+    }
 
-    return studio;
+    return { "messgae": "시류ㅐ" };
   }
 
   studioImageCreate(studioId: number, body: StudioImageCreateBody) {
@@ -122,6 +127,7 @@ export class StudioService {
       }
     });
     if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
+
     return studio;
   }
 
