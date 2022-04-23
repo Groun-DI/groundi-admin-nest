@@ -3,6 +3,13 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import {
+  BadRequestExceptionFilter,
+  DefaultExceptionFilter,
+  InternalExceptionFilter,
+  NotFoundExceptionFilter,
+  UnauthorizedExceptionFilter,
+} from './errors/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -23,6 +30,11 @@ async function bootstrap() {
         transform: true,
       }),
     )
+    .useGlobalFilters(new DefaultExceptionFilter())
+    .useGlobalFilters(new InternalExceptionFilter())
+    .useGlobalFilters(new UnauthorizedExceptionFilter())
+    .useGlobalFilters(new BadRequestExceptionFilter())
+    .useGlobalFilters(new NotFoundExceptionFilter())
     .enableCors();
   app.setGlobalPrefix('/api');
 

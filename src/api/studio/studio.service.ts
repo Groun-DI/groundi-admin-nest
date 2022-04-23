@@ -18,49 +18,51 @@ export class StudioService {
   ) { }
 
   async studioCreate(centerId: number, body: StudioCreateBody) {
-    try {
-      const studio = await this.prismaService.studio.create({
-        data: {
-          centerId: centerId,
-          name: body.name,
-          checkInNotice: body.checkInNotice,
-          description: body.description,
-          basicOccupancy: body.basicOccupancy,
-          maximumOccupancy: body.maximumOccupancy,
-          refundCode: body.refundCode,
-          extraPrice: body.extraPrice,
-          minimumRentalPrice: body.minimumRentalPrice,
-          maximumRentalPrice: body.maximumRentalPrice,
-          rentalTimeUnitCode: body.rentalTimeUnitCode,
-          StudioAmenity: {
-            create:
-              body.amenities.map((item) => ({
-                AmenityList: {
-                  connect: { id: item },
-                },
-              }))
-          },
-          StudioPrecaution: {
-            create: body.precautions.map((item) => ({
+    const studio = await this.prismaService.studio.create({
+      data: {
+        centerId: centerId,
+        name: body.name,
+        checkInNotice: body.checkInNotice,
+        description: body.description,
+        basicOccupancy: body.basicOccupancy,
+        maximumOccupancy: body.maximumOccupancy,
+        refundCode: body.refundCode,
+        extraPrice: body.extraPrice,
+        minimumRentalPrice: body.minimumRentalPrice,
+        maximumRentalPrice: body.maximumRentalPrice,
+        rentalTimeUnitCode: body.rentalTimeUnitCode,
+        StudioAmenity: {
+          create:
+            body.amenities.map((item) => ({
+              AmenityList: {
+                connect: { id: item },
+              },
+            }))
+        },
+        StudioPrecaution: {
+          create:
+            body.precautions.map((item) => ({
               PrecautionList: {
                 connect: { id: item },
               },
             }))
-          },
-          StudioComplimentary: {
-            create: body.complimentaries.map((item) => ({
+        },
+        StudioComplimentary: {
+          create:
+            body.complimentaries.map((item) => ({
               ComplimentaryList: {
                 connect: { id: item },
               },
             }))
-          },
-        }
-      });
-    } catch (e) {
-      console.log("잘못 입력했습니다");
-    }
+        },
+      }
+    });
 
-    return { "messgae": "시류ㅐ" };
+    console.log(!studio);
+
+    if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
+
+    return studio;
   }
 
   studioImageCreate(studioId: number, body: StudioImageCreateBody) {

@@ -113,7 +113,7 @@ model Studio {
 model StudioHoliday {
   id       BigInt   @id @default(autoincrement())
   studioId BigInt
-  date     DateTime @db.Date
+  date     DateTime @unique(map: "StudioHoliday_UN") @db.Date
   reason   String   @db.VarChar(200)
   Studio   Studio   @relation(fields: [studioId], references: [id])
 
@@ -191,7 +191,7 @@ model ComplimentaryList {
 }
 
 model PrecautionList {
-  id               String             @id @db.VarChar(10)
+  id               String             @id @db.VarChar(15)
   name             String             @db.VarChar(30)
   description      String             @db.VarChar(200)
   createAt         DateTime           @default(now()) @db.DateTime(0)
