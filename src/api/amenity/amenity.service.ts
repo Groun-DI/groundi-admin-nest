@@ -5,7 +5,7 @@ import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
 import { AmenityRes } from './dto/amenity.res';
 import { Prisma } from '@prisma/client';
-import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
+import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/http-exceptions';
 
 @Injectable()
 export class AmenityService {

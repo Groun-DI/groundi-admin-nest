@@ -14,7 +14,7 @@ import {
 import {
   FORBIDDEN_TYPE,
   ForbiddenException,
-} from '../../errors/forbidden.exception';
+} from '../../errors/http-exceptions';
 import * as bcrypt from 'bcrypt';
 import { LoginReq } from '../../dto/login.req';
 

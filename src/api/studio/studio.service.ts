@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
-import { UnauthorizedException, UNAUTHORIZED_TYPE } from 'src/errors/unauthorized.exception';
+import { BaseBizException, Exceptions } from "../../errors/http-exceptions";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { Studio as StudioModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
@@ -15,54 +14,46 @@ import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 @Injectable()
 export class StudioService {
   constructor(private readonly prismaService: PrismaService) { }
+
   async studioCreate(centerId: number, body: StudioCreateBody): Promise<StudioModel> {
-    let studio: StudioModel;
-
-    const createAmenities = body.amenities.map((item) => ({
-      AmenityList: {
-        connect: { id: item },
-      },
-    }));
-
-    const createPrecautions = body.precautions.map((item) => ({
-      PrecautionList: {
-        connect: { id: item },
-      },
-    }));
-
-    const createComplimentaries = body.complimentaries.map((item) => ({
-      ComplimentaryList: {
-        connect: { id: item },
-      },
-    }));
-
-    try {
-      studio = await this.prismaService.studio.create({
-        data: {
-          centerId: centerId,
-          name: body.name,
-          checkInNotice: body.checkInNotice,
-          description: body.description,
-          basicOccupancy: body.basicOccupancy,
-          maximumOccupancy: body.maximumOccupancy,
-          refundCode: body.refundCode,
-          extraPrice: body.extraPrice,
-          minimumRentalPrice: body.minimumRentalPrice,
-          maximumRentalPrice: body.maximumRentalPrice,
-          rentalTimeUnitCode: body.rentalTimeUnitCode,
-          StudioAmenity: { create: createAmenities },
-          StudioPrecaution: { create: createPrecautions },
-          StudioComplimentary: { create: createComplimentaries },
-        }
-      });
-    } catch (e) {
-      console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+    const studio = await this.prismaService.studio.create({
+      data: {
+        centerId: centerId,
+        name: body.name,
+        checkInNotice: body.checkInNotice,
+        description: body.description,
+        basicOccupancy: body.basicOccupancy,
+        maximumOccupancy: body.maximumOccupancy,
+        refundCode: body.refundCode,
+        extraPrice: body.extraPrice,
+        minimumRentalPrice: body.minimumRentalPrice,
+        maximumRentalPrice: body.maximumRentalPrice,
+        rentalTimeUnitCode: body.rentalTimeUnitCode,
+        StudioAmenity: {
+          create:
+            body.amenities.map((item) => ({
+              AmenityList: {
+                connect: { id: item },
+              },
+            }))
+        },
+        StudioPrecaution: {
+          create: body.precautions.map((item) => ({
+            PrecautionList: {
+              connect: { id: item },
+            },
+          }))
+        },
+        StudioComplimentary: {
+          create: body.complimentaries.map((item) => ({
+            ComplimentaryList: {
+              connect: { id: item },
+            },
+          }))
+        },
       }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
-    }
+    });
+    if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
 
     return studio;
   }
@@ -115,31 +106,22 @@ export class StudioService {
   }
 
   async studioUpdate(studioId: number, body: StudioUpdateBody) {
-    let studio: StudioModel;
-    try {
-      studio = await this.prismaService.studio.update({
-        where: { id: studioId },
-        data: {
-          name: body.name,
-          checkInNotice: body.checkInNotice,
-          description: body.description,
-          basicOccupancy: body.basicOccupancy,
-          maximumOccupancy: body.maximumOccupancy,
-          refundCode: body.refundCode,
-          extraPrice: body.extraPrice,
-          minimumRentalPrice: body.minimumRentalPrice,
-          maximumRentalPrice: body.maximumRentalPrice,
-          rentalTimeUnitCode: body.rentalTimeUnitCode
-        }
-      });
-    } catch (e) {
-      console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
+    const studio = await this.prismaService.studio.update({
+      where: { id: studioId },
+      data: {
+        name: body.name,
+        checkInNotice: body.checkInNotice,
+        description: body.description,
+        basicOccupancy: body.basicOccupancy,
+        maximumOccupancy: body.maximumOccupancy,
+        refundCode: body.refundCode,
+        extraPrice: body.extraPrice,
+        minimumRentalPrice: body.minimumRentalPrice,
+        maximumRentalPrice: body.maximumRentalPrice,
+        rentalTimeUnitCode: body.rentalTimeUnitCode
       }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
-    }
+    });
+    if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
     return studio;
   }
 
@@ -168,7 +150,7 @@ export class StudioService {
       where: { centerId: centerId },
     });
 
-    if (!studios) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
+    if (!studios) throw new BaseBizException(Exceptions.STUDIO_NOTFOUND);
 
     return studios;
   }

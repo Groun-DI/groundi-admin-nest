@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { StudioHoliday as StudioHolidayModel } from '@prisma/client';
-import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
+import { BaseBizException, Exceptions } from 'src/errors/http-exceptions';
 import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { DailyStatusCreateBody } from 'src/dto/daily-status-create.body';
 import { DailyRentalPriceCreateBody } from 'src/dto/daily-rental-price-create.body';
@@ -33,7 +33,6 @@ export class RentalTimeManagementService {
       }
     } catch (e) {
       console.log(e);
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
 
     return data;
@@ -96,7 +95,6 @@ export class RentalTimeManagementService {
 
     } catch (e) {
       console.log(e);
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
   }
 
@@ -119,7 +117,6 @@ export class RentalTimeManagementService {
       }
     } catch (e) {
       console.log(e);
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
 
     return { "message": "success" };

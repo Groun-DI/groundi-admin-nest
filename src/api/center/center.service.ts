@@ -5,13 +5,9 @@ import { CreateCenterDto, CreateCenterParkingLotDto } from './dto/create-center.
 import { UpdateCenterDto } from './dto/update-center.dto';
 import { Prisma } from '@prisma/client';
 import {
-  UNAUTHORIZED_TYPE,
-  UnauthorizedException,
-} from '../../errors/unauthorized.exception';
-import {
   FORBIDDEN_TYPE,
   ForbiddenException,
-} from '../../errors/forbidden.exception';
+} from '../../errors/http-exceptions';
 import { NaverGeocodingService } from 'src/services/naver-geocoding/naver-geocoding.service';
 
 @Injectable()

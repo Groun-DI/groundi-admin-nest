@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ForbiddenException, FORBIDDEN_TYPE } from 'src/errors/forbidden.exception';
-import { UnauthorizedException, UNAUTHORIZED_TYPE } from 'src/errors/unauthorized.exception';
+import { BaseBizException, Exceptions } from 'src/errors/http-exceptions';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateTempStudioDto } from './dto/create-temp-studio.dto';
 import { UpdateTempStudioDto } from './dto/update-temp-studio.dto';
@@ -72,11 +71,6 @@ export class TempStudioService {
       })
     } catch (e) {
       console.log(e);
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002')
-          throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-      }
-      throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     }
     return Number(studio.id);
   }
@@ -86,8 +80,6 @@ export class TempStudioService {
       where: { centerId: centerId },
     });
     
-    if (!studios) throw new UnauthorizedException(UNAUTHORIZED_TYPE.NO_MEMBER);
-
     return studios;
   }
 
