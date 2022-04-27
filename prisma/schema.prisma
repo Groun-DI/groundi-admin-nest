@@ -34,169 +34,14 @@ model User {
   Payment     Payment[]
 }
 
-model PlaceAdmin {
-  createdAt    DateTime @default(now()) @db.DateTime(0)
-  updatedAt    DateTime @default(now()) @db.DateTime(0)
-  phoneNumber  String   @unique @db.Char(11)
-  email        String   @unique @db.VarChar(50)
-  password     String   @db.VarChar(64)
-  name         String   @db.VarChar(8)
-  id           BigInt   @id @default(autoincrement())
-  profileImage String   @db.Text
-  Center       Center[]
-}
-
-model Center {
-  id                      BigInt                    @id @default(autoincrement())
-  adminId                 BigInt
-  createAt                DateTime                  @default(now()) @db.DateTime(0)
-  updatedAt               DateTime                  @default(now()) @db.DateTime(0)
-  name                    String                    @db.VarChar(40)
-  address                 String                    @unique @db.VarChar(85)
-  detailAddress           String                    @db.VarChar(85)
-  phoneNumber             String                    @unique @db.VarChar(20)
-  location                Unsupported("point")?
-  latitude                Float
-  longitude               Float
-  PlaceAdmin              PlaceAdmin                @relation(fields: [adminId], references: [id])
-  CenterLookupInformation CenterLookupInformation[]
-  CenterParkingLot        CenterParkingLot?
-  Studio                  Studio[]
-  TempStudio              TempStudio[]
-
-  @@index([adminId])
-}
-
-model CenterLookupInformation {
-  id                 BigInt   @id @default(autoincrement())
-  centerId           BigInt
-  createAt           DateTime @default(now()) @db.DateTime(0)
-  updateAt           DateTime @default(now()) @db.DateTime(0)
-  ceoName            String   @db.VarChar(20)
-  busniessType       String   @db.VarChar(250)
-  busniessCode       String   @unique @db.Char(10)
-  businessAttachment String   @db.Text
-  adminPhonenumber   String   @db.Char(11)
-  adminEmail         String   @db.VarChar(50)
-  Center             Center   @relation(fields: [centerId], references: [id])
-
-  @@index([centerId])
-}
-
-model Studio {
-  id                  BigInt                @id @default(autoincrement())
-  centerId            BigInt
-  createdAt           DateTime              @default(now()) @db.DateTime(0)
-  updateAt            DateTime              @default(now()) @db.DateTime(0)
-  name                String                @db.VarChar(40)
-  description         String                @db.Text
-  checkInNotice       String?               @db.Text
-  basicOccupancy      Int
-  maximumOccupancy    Int
-  extraPrice          Int
-  minimumRentalPrice  Int
-  maximumRentalPrice  Int
-  rentalTimeUnitCode  String                @db.VarChar(10)
-  refundCode          String                @db.VarChar(10)
-  Center              Center                @relation(fields: [centerId], references: [id])
-  StudioAmenity       StudioAmenity[]
-  StudioComplimentary StudioComplimentary[]
-  StudioDailyStatus   StudioDailyStatus[]
-  StudioHashTag       StudioHashTag[]
-  StudioHoliday       StudioHoliday[]
-  StudioImage         StudioImage[]
-  StudioPrecaution    StudioPrecaution[]
-
-  @@index([centerId])
-}
-
 model StudioHoliday {
   id       BigInt   @id @default(autoincrement())
   studioId BigInt
   date     DateTime @unique(map: "StudioHoliday_UN") @db.Date
   reason   String   @db.VarChar(200)
-  Studio   Studio   @relation(fields: [studioId], references: [id])
+  Studios  Studios  @relation(fields: [studioId], references: [id])
 
   @@index([studioId])
-}
-
-model StudioHashTag {
-  id       BigInt @id @default(autoincrement())
-  studioId BigInt
-  content  String @db.VarChar(30)
-  Studio   Studio @relation(fields: [studioId], references: [id])
-
-  @@index([studioId])
-}
-
-model CenterParkingLot {
-  centerId        BigInt   @id @default(autoincrement())
-  updateAt        DateTime @default(now()) @db.DateTime(0)
-  isAvailable     Boolean
-  paymentType     String?  @db.Char(4)
-  firstPayment    Int?
-  additionPayment Int?
-  allDayPayment   Int?
-  oneTimePayment  Int?
-  content         String?  @db.Text
-  additionHour    String?  @db.VarChar(6)
-  additionMinute  String?  @db.VarChar(4)
-  firstHour       String?  @db.VarChar(6)
-  firstMinute     String?  @db.VarChar(4)
-  Center          Center   @relation(fields: [centerId], references: [id])
-}
-
-model StudioAmenity {
-  studioId    BigInt
-  amenityId   String
-  AmenityList AmenityList @relation(fields: [amenityId], references: [id])
-  Studio      Studio      @relation(fields: [studioId], references: [id])
-
-  @@id([studioId, amenityId])
-  @@index([amenityId])
-}
-
-model StudioComplimentary {
-  studioId          BigInt
-  complimentaryId   String
-  ComplimentaryList ComplimentaryList @relation(fields: [complimentaryId], references: [id])
-  Studio            Studio            @relation(fields: [studioId], references: [id])
-
-  @@id([studioId, complimentaryId])
-  @@index([complimentaryId])
-}
-
-model StudioPrecaution {
-  studioId       BigInt
-  precautionId   String         @db.VarChar(10)
-  PrecautionList PrecautionList @relation(fields: [precautionId], references: [id], onDelete: NoAction, map: "StudioPrecaution_ibfk_2")
-  Studio         Studio         @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioPrecaution_ibfk_1")
-
-  @@id([studioId, precautionId])
-  @@index([precautionId], map: "precautionId")
-}
-
-model AmenityList {
-  id                String              @id @db.VarChar(20)
-  image             String              @db.Text
-  StudioAmenity     StudioAmenity[]
-  TempStudioAmenity TempStudioAmenity[]
-}
-
-model ComplimentaryList {
-  id                      String                    @id @db.VarChar(20)
-  image                   String?                   @db.Text
-  StudioComplimentary     StudioComplimentary[]
-  TempStudioComplimentary TempStudioComplimentary[]
-}
-
-model PrecautionList {
-  id               String             @id @db.VarChar(15)
-  name             String             @db.VarChar(30)
-  description      String             @db.VarChar(200)
-  createAt         DateTime           @default(now()) @db.DateTime(0)
-  updateAt         DateTime           @default(now()) @db.DateTime(0)
-  StudioPrecaution StudioPrecaution[]
 }
 
 model Payment {
@@ -243,7 +88,7 @@ model TempStudio {
   highestPrice            Int?
   refundCode              String?                   @db.VarChar(15)
   precautionContent       String?                   @db.Text
-  Center                  Center                    @relation(fields: [centerId], references: [id])
+  Centers                 Centers                   @relation(fields: [centerId], references: [id])
   TempStudioAmenity       TempStudioAmenity[]
   TempStudioComplimentary TempStudioComplimentary[]
 
@@ -251,56 +96,207 @@ model TempStudio {
 }
 
 model TempStudioAmenity {
-  studioId    BigInt
-  amenityId   String
-  AmenityList AmenityList @relation(fields: [amenityId], references: [id])
-  TempStudio  TempStudio  @relation(fields: [studioId], references: [id])
+  studioId   BigInt
+  amenityId  String
+  Amenities  Amenities  @relation(fields: [amenityId], references: [id])
+  TempStudio TempStudio @relation(fields: [studioId], references: [id])
 
   @@id([studioId, amenityId])
   @@index([amenityId])
 }
 
 model TempStudioComplimentary {
-  studioId          BigInt
-  complimentaryId   String
-  ComplimentaryList ComplimentaryList @relation(fields: [complimentaryId], references: [id])
-  TempStudio        TempStudio        @relation(fields: [studioId], references: [id])
+  studioId        BigInt
+  complimentaryId String
+  Complimentaries Complimentaries @relation(fields: [complimentaryId], references: [id])
+  TempStudio      TempStudio      @relation(fields: [studioId], references: [id])
 
   @@id([studioId, complimentaryId])
   @@index([complimentaryId])
 }
 
-model StudioDailyRentalPrice {
-  id                BigInt            @id @default(autoincrement())
-  dailyStatusId     BigInt
-  createdAt         DateTime          @default(now()) @db.DateTime(0)
-  startAt           DateTime          @db.Time(0)
-  price             Int
-  StudioDailyStatus StudioDailyStatus @relation(fields: [dailyStatusId], references: [id], onDelete: NoAction, map: "StudioDailyRentalPrice_ibfk_1")
-
-  @@index([dailyStatusId], map: "dailyStatusId")
+model Amenities {
+  id                String              @id @db.VarChar(20)
+  image             String              @db.Text
+  name              String              @db.VarChar(100)
+  StudioAmenities   StudioAmenities[]
+  TempStudioAmenity TempStudioAmenity[]
 }
 
-model StudioDailyStatus {
-  id                     BigInt                   @id @default(autoincrement())
-  studioId               BigInt
-  createdAt              DateTime                 @default(now()) @db.DateTime(0)
-  updateAt               DateTime                 @default(now()) @db.DateTime(0)
-  dayOfweek              String                   @db.VarChar(10)
-  isOpen                 Boolean
-  Studio                 Studio                   @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioDailyStatus_ibfk_1")
-  StudioDailyRentalPrice StudioDailyRentalPrice[]
-
-  @@index([studioId], map: "studioId")
+model CenterAdmins {
+  createdAt   DateTime  @default(now()) @db.DateTime(0)
+  updatedAt   DateTime  @default(now()) @db.DateTime(0)
+  phoneNumber String    @unique(map: "PlaceAdmin_phoneNumber_key") @db.Char(11)
+  email       String    @unique(map: "PlaceAdmin_email_key") @db.VarChar(50)
+  password    String    @db.VarChar(64)
+  name        String    @db.VarChar(8)
+  id          BigInt    @id @default(autoincrement())
+  Centers     Centers[]
 }
 
-model StudioImage {
+model CenterParkingLots {
+  centerId           BigInt    @id @default(autoincrement())
+  updateAt           DateTime  @default(now()) @db.DateTime(0)
+  isAvailable        Boolean
+  paymentTypeCode    String?   @db.Char(4)
+  firstTimeCharge    Int?
+  additionTimeCharge Int?
+  maximumCharge      Int?
+  oneTimeCharge      Int?
+  description        String?   @db.Text
+  additionTime       DateTime? @db.Time(0)
+  firstTime          DateTime? @db.Time(0)
+  Centers            Centers   @relation(fields: [centerId], references: [id], map: "CenterParkingLot_centerId_fkey")
+}
+
+model Centers {
+  id                               BigInt                @id @default(autoincrement())
+  adminId                          BigInt
+  createAt                         DateTime              @default(now()) @db.DateTime(0)
+  updatedAt                        DateTime              @default(now()) @db.DateTime(0)
+  name                             String                @db.VarChar(40)
+  address                          String                @unique(map: "Center_address_key") @db.VarChar(85)
+  detailAddress                    String                @db.VarChar(85)
+  phoneNumber                      String                @unique(map: "Center_phoneNumber_key") @db.VarChar(20)
+  location                         Unsupported("point")?
+  latitude                         Float
+  longitude                        Float
+  busniessLicenseNumber            String                @db.Char(10)
+  attachedFileUrlOfBusinessLicense String                @db.Text
+  CenterAdmins                     CenterAdmins          @relation(fields: [adminId], references: [id], map: "Center_adminId_fkey")
+  CenterParkingLots                CenterParkingLots?
+  Studios                          Studios[]
+  TempStudio                       TempStudio[]
+
+  @@index([adminId], map: "Center_adminId_idx")
+}
+
+model Complimentaries {
+  id                      String                    @id @db.VarChar(20)
+  image                   String?                   @db.Text
+  name                    String                    @db.VarChar(100)
+  StudioComplimentaries   StudioComplimentaries[]
+  TempStudioComplimentary TempStudioComplimentary[]
+}
+
+model Precautions {
+  id                String              @id @db.VarChar(20)
+  name              String              @db.VarChar(30)
+  description       String              @db.VarChar(200)
+  createAt          DateTime            @default(now()) @db.DateTime(0)
+  updateAt          DateTime            @default(now()) @db.DateTime(0)
+  StudioPrecautions StudioPrecautions[]
+}
+
+model StudioRegularHolidays {
+  studioId    BigInt
+  dayOfweekId Int
+  DayOfWeeks  DayOfWeeks @relation(fields: [dayOfweekId], references: [id])
+  Studios     Studios   @relation(fields: [studioId], references: [id])
+
+  @@id([studioId, dayOfweekId])
+  @@index([dayOfweekId])
+}
+
+model DayOfWeeks {
+  id                Int            @id 
+  dayOfweek         String         @db.VarChar(30)
+  StudioRentalPrices StudioRentalPrices[]
+  StudioRegularHolidays StudioRegularHolidays[]
+}
+
+model StudioNationalHolidays {
+  studioId    BigInt
+  nationalHolidayId String
+  NationalHolidays  NationalHolidays @relation(fields: [nationalHolidayId], references: [id])
+  Studios     Studios   @relation(fields: [studioId], references: [id])
+
+  @@id([studioId, nationalHolidayId])
+  @@index([nationalHolidayId])
+}
+
+model NationalHolidays {
+  id                String         @id @db.VarChar(20)
+  holiday           DateTime       @db.DateTime(0)
+  StudioNationalHolidays StudioNationalHolidays[]
+}
+
+model StudioAmenities {
+  studioId  BigInt
+  amenityId String
+  Amenities Amenities @relation(fields: [amenityId], references: [id], map: "StudioAmenity_amenityId_fkey")
+  Studios   Studios   @relation(fields: [studioId], references: [id], map: "StudioAmenity_studioId_fkey")
+
+  @@id([studioId, amenityId])
+  @@index([amenityId], map: "StudioAmenity_amenityId_idx")
+}
+
+model StudioComplimentaries {
+  studioId        BigInt
+  complimentaryId String
+  Complimentaries Complimentaries @relation(fields: [complimentaryId], references: [id], map: "StudioComplimentary_complimentaryId_fkey")
+  Studios         Studios         @relation(fields: [studioId], references: [id], map: "StudioComplimentary_studioId_fkey")
+
+  @@id([studioId, complimentaryId])
+  @@index([complimentaryId], map: "StudioComplimentary_complimentaryId_idx")
+}
+
+model StudioImages {
   id       BigInt   @id @default(autoincrement())
   studioId BigInt
   createAt DateTime @default(now()) @db.DateTime(0)
   order    Int
   image    String   @db.Text
-  Studio   Studio   @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioImage_ibfk_1")
+  Studios  Studios  @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioImages_ibfk_1")
 
   @@index([studioId], map: "studioId")
+}
+
+model StudioPrecautions {
+  studioId     BigInt
+  precautionId String      @db.VarChar(15)
+  Precautions  Precautions @relation(fields: [precautionId], references: [id], onDelete: NoAction, map: "StudioPrecautions_ibfk_2")
+  Studios      Studios     @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioPrecautions_ibfk_1")
+
+  @@id([studioId, precautionId])
+  @@index([precautionId], map: "StudioPrecaution_ibfk_2")
+}
+
+model StudioRentalPrices {
+  id            BigInt   @id @default(autoincrement())
+  studioId      BigInt
+  dayOfweekId   Int
+  createdAt     DateTime @default(now()) @db.DateTime(0)
+  price         Int
+  startAt       DateTime @db.Time(0)
+  Studios       Studios  @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioRentalPrices_ibfk_1")
+  DayOfWeeks    DayOfWeeks  @relation(fields: [dayOfweekId], references: [id])
+
+  @@index([studioId])
+}
+
+model Studios {
+  id                      BigInt                  @id @default(autoincrement())
+  centerId                BigInt
+  createdAt               DateTime                @default(now()) @db.DateTime(0)
+  updateAt                DateTime                @default(now()) @db.DateTime(0)
+  name                    String                  @db.VarChar(40)
+  description             String                  @db.Text
+  checkInNotice           String?                 @db.Text
+  basicOccupancy          Int
+  maximumOccupancy        Int
+  extraPrice              Int
+  rentalTimeUnitCode      String                  @db.VarChar(10)
+  refundCode              String                  @db.VarChar(10)
+  Centers                 Centers                 @relation(fields: [centerId], references: [id], map: "Studio_centerId_fkey")
+  StudioRegularHolidays   StudioRegularHolidays[]
+  StudioNationalHolidays  StudioNationalHolidays[]
+  StudioAmenities         StudioAmenities[]
+  StudioComplimentaries   StudioComplimentaries[]
+  StudioHoliday           StudioHoliday[]
+  StudioImages            StudioImages[]
+  StudioPrecautions       StudioPrecautions[]
+  StudioRentalPrices      StudioRentalPrices[]
+
+  @@index([centerId], map: "Studio_centerId_idx")
 }

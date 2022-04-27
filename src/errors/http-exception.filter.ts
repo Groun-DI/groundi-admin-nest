@@ -36,8 +36,20 @@ export class UnauthorizedExceptionFilter implements ExceptionFilter {
 
 @Catch(BadRequestException)
 export class BadRequestExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
-    commonCatch(exception, host, CommonError.badRequest);
+  catch(exception: BaseBizException, host: ArgumentsHost) {
+    const responseModel = exception.getResponse();
+
+    logger.log('Error: ', responseModel);
+
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
+    if (responseModel instanceof Exceptions)
+      response.status(responseModel.statusCode).json(responseModel);
+    else
+      response
+        .status(CommonError.internal.statusCode)
+        .json(CommonError.internal);
   }
 }
 

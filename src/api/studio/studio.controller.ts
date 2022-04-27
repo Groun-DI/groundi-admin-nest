@@ -1,7 +1,7 @@
 
 import { Controller, Get, Post, Body, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { StudioService } from './studio.service';
-import { JwtAuthGuard } from 'src/auth-guard/jwt/jwt.auth-guard';
+import { JwtAuthGuard, JwtModel } from 'src/auth-guard/jwt/jwt.auth-guard';
 import { Studio as StudioModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioImageCreateBody } from 'src/dto/studio-image-create';
@@ -10,22 +10,23 @@ import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
 import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
+import { User } from 'src/decorators/user.decorator';
 
-
-@Controller('center/:centerId/studio')
+@UseGuards(JwtAuthGuard)
+@Controller('studio')
 
 export class StudioController {
   constructor(private readonly studioService: StudioService) { }
 
   @Post()
-  studioCreate(@Param('centerId') centerId: number, @Body() body: StudioCreateBody) {
-    return this.studioService.studioCreate(centerId, body);
+  studioCreate(@User() user: JwtModel, @Body() body: StudioCreateBody) {
+    return this.studioService.studioCreate(+user.id, body);
   }
 
-  @Post(':studioId/image')
-  studioImageCreate(@Param('studioId') studioId: number, @Body() body: StudioImageCreateBody) {
-    return this.studioService.studioImageCreate(+studioId, body);
-  }
+  // @Post(':studioId/image')
+  // studioImageCreate(@Param('studioId') studioId: number, @Body() body: StudioImageCreateBody) {
+  //   return this.studioService.studioImageCreate(+studioId, body);
+  // }
 
   @Put(':studioId')
   studioUpdate(@Param('studioId') studioId: number, @Body() body: StudioUpdateBody) {
@@ -58,13 +59,12 @@ export class StudioController {
   }
 
   @Get()
-  studioFindAll(@Param('centerId') centerId: number) {
-    return this.studioService.studioFindAll(+centerId);
+  studioFindAll(@User() user: JwtModel) {
+    return this.studioService.studioFindAll(+user.id);
   }
 
   @Get(':studioId')
   studioFindOne(@Param('studioId') studioId: string): Promise<StudioModel> {
     return this.studioService.studioFindOne(+studioId);
   }
-
 }

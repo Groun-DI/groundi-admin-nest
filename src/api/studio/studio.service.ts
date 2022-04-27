@@ -17,10 +17,10 @@ export class StudioService {
     private readonly prismaService: PrismaService
   ) { }
 
-  async studioCreate(centerId: number, body: StudioCreateBody) {
+  async studioCreate(userId: number, body: StudioCreateBody) {
     const studio = await this.prismaService.studio.create({
       data: {
-        centerId: centerId,
+        centerId: userId,
         name: body.name,
         checkInNotice: body.checkInNotice,
         description: body.description,
@@ -57,8 +57,6 @@ export class StudioService {
         },
       }
     });
-
-    console.log(!studio);
 
     if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
 
@@ -112,7 +110,7 @@ export class StudioService {
     });
   }
 
-  async studioUpdate(studioId: number, body: StudioUpdateBody) {
+  async studioUpdate(studioId: number, body: StudioUpdateBody): Promise<StudioModel> {
     const studio = await this.prismaService.studio.update({
       where: { id: studioId },
       data: {
@@ -128,6 +126,7 @@ export class StudioService {
         rentalTimeUnitCode: body.rentalTimeUnitCode
       }
     });
+
     if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
 
     return studio;
@@ -153,9 +152,9 @@ export class StudioService {
     return studio;
   }
 
-  async studioFindAll(centerId: number) {
+  async studioFindAll(userId: number) {
     const studios = await this.prismaService.studio.findMany({
-      where: { centerId: centerId },
+      where: { centerId: userId },
     });
 
     if (!studios) throw new BaseBizException(Exceptions.STUDIO_NOTFOUND);
