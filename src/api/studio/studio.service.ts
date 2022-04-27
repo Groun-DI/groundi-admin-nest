@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseBizException, Exceptions } from "../../errors/http-exceptions";
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { Studio as StudioModel } from '@prisma/client';
+import { Studios as StudioModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioImageCreateBody } from 'src/dto/studio-image-create';
 import { StudioUpdateBody } from 'src/dto/studio-update';
@@ -18,7 +18,7 @@ export class StudioService {
   ) { }
 
   async studioCreate(userId: number, body: StudioCreateBody) {
-    const studio = await this.prismaService.studio.create({
+    const studio = await this.prismaService.studios.create({
       data: {
         centerId: userId,
         name: body.name,
@@ -28,29 +28,27 @@ export class StudioService {
         maximumOccupancy: body.maximumOccupancy,
         refundCode: body.refundCode,
         extraPrice: body.extraPrice,
-        minimumRentalPrice: body.minimumRentalPrice,
-        maximumRentalPrice: body.maximumRentalPrice,
         rentalTimeUnitCode: body.rentalTimeUnitCode,
-        StudioAmenity: {
+        StudioAmenities: {
           create:
             body.amenities.map((item) => ({
-              AmenityList: {
+              Amenities: {
                 connect: { id: item },
               },
             }))
         },
-        StudioPrecaution: {
+        StudioPrecautions: {
           create:
             body.precautions.map((item) => ({
-              PrecautionList: {
+              Precautions: {
                 connect: { id: item },
               },
             }))
         },
-        StudioComplimentary: {
+        StudioComplimentaries: {
           create:
             body.complimentaries.map((item) => ({
-              ComplimentaryList: {
+              Complimentaries: {
                 connect: { id: item },
               },
             }))
@@ -68,10 +66,10 @@ export class StudioService {
   }
 
   async amenityUpdate(studioId: number, body: AmenityUpdateBody[]) {
-    await this.prismaService.studioAmenity.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
+    await this.prismaService.studioAmenities.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
       if (res) {
         await Promise.all(body.map((item) => {
-          this.prismaService.studioAmenity.create({
+          this.prismaService.studioAmenities.create({
             data: {
               studioId: studioId,
               amenityId: item.amenityId
@@ -83,10 +81,10 @@ export class StudioService {
   }
 
   async precautionUpdate(studioId: number, body: PrecautionUpdateBody[]) {
-    await this.prismaService.studioPrecaution.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
+    await this.prismaService.studioPrecautions.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
       if (res) {
         await Promise.all(body.map((item) => {
-          this.prismaService.studioPrecaution.create({
+          this.prismaService.studioPrecautions.create({
             data: {
               studioId: studioId,
               precautionId: item.precautionId
@@ -98,9 +96,9 @@ export class StudioService {
   }
 
   async complimentaryUpdate(studioId: number, body: ComplimentaryUpdateBody[]) {
-    await this.prismaService.studioComplimentary.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
+    await this.prismaService.studioComplimentaries.deleteMany({ where: { studioId: studioId } }).then(async (res) => {
       await Promise.all(body.map((item) => {
-        this.prismaService.studioComplimentary.create({
+        this.prismaService.studioComplimentaries.create({
           data: {
             studioId: studioId,
             complimentaryId: item.complimentaryId
@@ -111,7 +109,7 @@ export class StudioService {
   }
 
   async studioUpdate(studioId: number, body: StudioUpdateBody): Promise<StudioModel> {
-    const studio = await this.prismaService.studio.update({
+    const studio = await this.prismaService.studios.update({
       where: { id: studioId },
       data: {
         name: body.name,
@@ -121,8 +119,6 @@ export class StudioService {
         maximumOccupancy: body.maximumOccupancy,
         refundCode: body.refundCode,
         extraPrice: body.extraPrice,
-        minimumRentalPrice: body.minimumRentalPrice,
-        maximumRentalPrice: body.maximumRentalPrice,
         rentalTimeUnitCode: body.rentalTimeUnitCode
       }
     });
@@ -137,7 +133,7 @@ export class StudioService {
   }
 
   async studioDelete(studioId: number) {
-    const studio = await this.prismaService.studio.deleteMany({
+    const studio = await this.prismaService.studios.deleteMany({
       where: { id: studioId }
     });
 
@@ -145,7 +141,7 @@ export class StudioService {
   }
 
   async studioImageDelete(imageId: number) {
-    const studio = await this.prismaService.studioImage.delete({
+    const studio = await this.prismaService.studioImages.delete({
       where: { id: imageId }
     });
 
@@ -153,7 +149,7 @@ export class StudioService {
   }
 
   async studioFindAll(userId: number) {
-    const studios = await this.prismaService.studio.findMany({
+    const studios = await this.prismaService.studios.findMany({
       where: { centerId: userId },
     });
 
@@ -163,12 +159,12 @@ export class StudioService {
   }
 
   async studioFindOne(studioId: number): Promise<StudioModel> {
-    const studio = await this.prismaService.studio.findUnique({
+    const studio = await this.prismaService.studios.findUnique({
       where: { id: studioId },
       include: {
-        StudioComplimentary: true,
-        StudioAmenity: true,
-        StudioPrecaution: true
+        StudioComplimentaries: true,
+        StudioAmenities: true,
+        StudioPrecautions: true
       }
     });
 

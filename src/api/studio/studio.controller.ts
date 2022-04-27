@@ -2,7 +2,7 @@
 import { Controller, Get, Post, Body, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { StudioService } from './studio.service';
 import { JwtAuthGuard, JwtModel } from 'src/auth-guard/jwt/jwt.auth-guard';
-import { Studio as StudioModel } from '@prisma/client';
+import { Studios as StudioModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioImageCreateBody } from 'src/dto/studio-image-create';
 import { StudioUpdateBody } from 'src/dto/studio-update';
