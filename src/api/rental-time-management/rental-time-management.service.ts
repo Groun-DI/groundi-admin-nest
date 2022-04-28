@@ -39,44 +39,12 @@ export class RentalTimeManagementService {
 
 
   async dailyStautsCreate(studioId: number, body: DailyStatusCreateBody) {
-    let generatedId: { id: bigint };
-
-    try {
-      generatedId = await this.prismaService.studioDailyStatus.create({
-        data: {
-          studioId: studioId,
-          dayOfweek: body.dayOfweek,
-          isOpen: body.isOpen
-        },
-        select: {
-          id: true
-        }
-      });
-    } catch (e) {
-      console.log(e);
-    }
 
     return `This action returns all studioOpenStatusPerWeek`;
   }
 
   async dailyRentalPriceCreate(body: DailyRentalPriceCreateBody) {
-    let generatedId: { id: bigint };
-
-    try {
-      generatedId = await this.prismaService.studioDailyRentalPrice.create({
-        data: {
-          dailyStatusId: body.dailyStatusId,
-          startAt: body.startAt,
-          price: body.price
-        },
-        select: {
-          id: true
-        }
-      })
-    } catch (e) {
-      console.log(e);
-    }
-
+    
     return 'This action adds a new studioDailyRentalTimePrice';
   }
 
@@ -122,13 +90,6 @@ export class RentalTimeManagementService {
   }
 
   async dailyRentalPriceDelete(dailyStatusId: number) {
-    try {
-      await this.prismaService.studioDailyRentalPrice.deleteMany({
-        where: { dailyStatusId: dailyStatusId }
-      })
-    } catch (e) {
-      console.log(e);
-    }
 
     return `This action removes a #${dailyStatusId} studioDailyRentalTimePrice`;
   }
@@ -155,7 +116,6 @@ export class RentalTimeManagementService {
   }
 
   async dailyStatusFindAll() {
-    const data = await this.prismaService.studioDailyStatus.findMany();
 
     return `This action returns all studioOpenStatusPerWeek`;
   }
@@ -165,16 +125,13 @@ export class RentalTimeManagementService {
   }
 
   async dailyRentalPriceFindAll() {
-    const data = await this.prismaService.studioDailyRentalPrice.findMany();
 
-    return data;
+    return;
   }
 
   async dailyRentalPriceFindOne() {
-    const data = await this.prismaService.studioDailyRentalPrice.findMany({
 
-    });
 
-    return data;
+    return;
   }
 }

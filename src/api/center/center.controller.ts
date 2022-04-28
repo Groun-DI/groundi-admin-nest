@@ -1,7 +1,7 @@
 import { UseGuards, Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CenterService } from './center.service';
-import { CreateCenterDto, CreateCenterParkingLotDto } from './dto/create-center.dto';
-import { UpdateCenterDto } from './dto/update-center.dto';
+import { CreateCenterDto, CreateCenterParkingLotDto } from '../../dto/center-create.body';
+import { UpdateCenterDto } from '../../dto/center-update.body';
 import { JwtAuthGuard, JwtModel } from 'src/auth-guard/jwt/jwt.auth-guard';
 import { User } from '../../decorators/user.decorator';
 
@@ -10,39 +10,39 @@ import { User } from '../../decorators/user.decorator';
 export class CenterController {
   constructor(private readonly centerService: CenterService) { }
 
-  @Post('/create')
-  create(@User() user: JwtModel, @Body() createCenterDto: CreateCenterDto) {
-    return this.centerService.create(user.id, createCenterDto);
+  @Post()
+  centerCreate(@User() user: JwtModel, @Body() createCenterDto: CreateCenterDto) {
+    return this.centerService.centerCreate(+user.id, createCenterDto);
   }
 
-  @Post('/parkinglot-create')
-  parkingLotCreate( @Body() createCenterParkingDto: CreateCenterParkingLotDto) {
-    return this.centerService.parkingLotCreate(createCenterParkingDto);
+  @Post(':centerId/parkinglot')
+  parkingLotCreate(@Param('centerId') centerId: number, @Body() createCenterParkingDto: CreateCenterParkingLotDto) {
+    return this.centerService.parkingLotCreate(+centerId, createCenterParkingDto);
   }
 
   @Get()
-  findAll(@User() user: JwtModel) {
-    return this.centerService.findAll(user.id);
+  centerFindAll(@User() user: JwtModel) {
+    return this.centerService.centerFindAll(+user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.centerService.findOne(+id);
+  @Get(':centerId')
+  centerFindOne(@Param('centerId') centerId: number) {
+    return this.centerService.centerFindOne(+centerId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCenterDto: UpdateCenterDto) {
-    return this.centerService.update(+id, updateCenterDto);
+  @Patch(':centerId')
+  centerUpdate(@Param('centerId') centerId: number, @Body() updateCenterDto: UpdateCenterDto) {
+    return this.centerService.centerUpdate(+centerId, updateCenterDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.centerService.remove(+id);
+  @Delete(':centerId')
+  delete(@Param('centerId') centerId: number) {
+    return this.centerService.centerDelete(+centerId);
   }
 
-  @Get('/:address')
-  async 909(@Param('address') address: string): Promise<any> {
+
+  @Get('address/:address')
+  getGeoCodingService(@Param('address') address: string) {
     return this.centerService.getGeoCodingService(address);
   }
-
 }

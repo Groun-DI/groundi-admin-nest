@@ -17,10 +17,10 @@ export class StudioService {
     private readonly prismaService: PrismaService
   ) { }
 
-  async studioCreate(userId: number, body: StudioCreateBody) {
+  async studioCreate(centerId: number, body: StudioCreateBody) {
     const studio = await this.prismaService.studios.create({
       data: {
-        centerId: userId,
+        centerId: centerId,
         name: body.name,
         checkInNotice: body.checkInNotice,
         description: body.description,
@@ -148,9 +148,9 @@ export class StudioService {
     return studio;
   }
 
-  async studioFindAll(userId: number) {
+  async studioFindAll(centerId: number) {
     const studios = await this.prismaService.studios.findMany({
-      where: { centerId: userId },
+      where: { centerId: centerId },
     });
 
     if (!studios) throw new BaseBizException(Exceptions.STUDIO_NOTFOUND);

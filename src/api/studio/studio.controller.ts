@@ -13,14 +13,14 @@ import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
 import { User } from 'src/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
-@Controller('studio')
+@Controller('/center/:centerId/studio')
 
 export class StudioController {
   constructor(private readonly studioService: StudioService) { }
 
   @Post()
-  studioCreate(@User() user: JwtModel, @Body() body: StudioCreateBody) {
-    return this.studioService.studioCreate(+user.id, body);
+  studioCreate(@Param('centerId') centerId: number, @Body() body: StudioCreateBody) {
+    return this.studioService.studioCreate(+centerId, body);
   }
 
   // @Post(':studioId/image')
@@ -59,8 +59,8 @@ export class StudioController {
   }
 
   @Get()
-  studioFindAll(@User() user: JwtModel) {
-    return this.studioService.studioFindAll(+user.id);
+  studioFindAll(@Param('centerId') centerId: number) {
+    return this.studioService.studioFindAll(+centerId);
   }
 
   @Get(':studioId')

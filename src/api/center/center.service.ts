@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { AuthorizationService } from 'src/services/authorization/authorization.service';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { CreateCenterDto, CreateCenterParkingLotDto } from './dto/create-center.dto';
-import { UpdateCenterDto } from './dto/update-center.dto';
+import { CreateCenterDto, CreateCenterParkingLotDto } from '../../dto/center-create.body';
+import { UpdateCenterDto } from '../../dto/center-update.body';
 import { Prisma } from '@prisma/client';
-import {
-  BaseBizException, Exceptions
-} from '../../errors/http-exceptions';
+import { BaseBizException, Exceptions } from '../../errors/http-exceptions';
 import { NaverGeocodingService } from 'src/services/naver-geocoding/naver-geocoding.service';
+import { Centers as CentersModel } from "@prisma/client";
+import { CenterParkingLots as CenterParkingLotsModel } from "@prisma/client";
 
 @Injectable()
 export class CenterService {
@@ -17,81 +17,97 @@ export class CenterService {
     private readonly naverGeocodingService: NaverGeocodingService
   ) { }
 
-  async create(id: number | bigint, body: CreateCenterDto) {
-    let center: { id: number | bigint };
-    try {
-      center = await this.prismaService.center.create({
-        data: {
-          adminId: Number(id),
-          name: body.name,
-          address: body.address,
-          phoneNumber: body.phoneNumber,
-          detailAddress: body.detailAddress,
-          latitude: Number(body.latitude),
-          longitude: Number(body.longitude)
-        },
-        select: {
-          id: true
-        }
-      })
-    } catch (e) {
-      console.log(e);
-    }
-    return { message: "success" }
+  async centerCreate(userId: number, body: CreateCenterDto): Promise<CentersModel> {
+    const center = await this.prismaService.centers.create({
+      data: {
+        adminId: userId,
+        name: body.name,
+        address: body.address,
+        detailAddress: body.detailAddress,
+        phoneNumber: body.phoneNumber,
+        latitude: body.latitude,
+        longitude: body.longitude,
+        busniessLicenseNumber: body.address,
+        attachedFileUrlOfBusinessLicense: body.address
+      }
+    })
+
+    if (!center) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
+
+    return center;
   }
 
-  async parkingLotCreate(body: CreateCenterParkingLotDto) {
-    let resData: { centerId: number | bigint };
-    // try {
-    //   resData = await this.prismaService.centerParkingLot.create({
-    //     data: {
-    //       centerId: Number(body.centerId),
-    //       isAvailable: body.isAvailable,
-    //       paymentType: body.paymentType,
-    //       firstHour: body.fir,
-    //       firstPayment: Number(body.firstPayment),
-    //       additionTime: body.additionTime,
-    //       additionPayment: Number(body.additionPayment),
-    //       allDayPayment: Number(body.allDayPayment),
-    //       oneTimePayment: Number(body.oneTimePayment),
-    //       content: body.content
-    //     },
-    //     select: {
-    //       centerId: true
-    //     }
-    //   })
-    // } catch (e) {
-    //   console.log(e);
-    //   if (e instanceof Prisma.PrismaClientKnownRequestError) {
-    //     if (e.code === 'P2002')
-    //       throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-    //   }
-    //   throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
-    // }
-    return { message: "success" }
+
+  async centerUpdate(centerId: number, body: UpdateCenterDto): Promise<CentersModel> {
+    const center = await this.prismaService.centers.update({
+      where: {
+        id: centerId
+      },
+      data: {
+        name: body.name,
+        address: body.address,
+        detailAddress: body.detailAddress,
+        phoneNumber: body.phoneNumber,
+        latitude: body.latitude,
+        longitude: body.longitude,
+        busniessLicenseNumber: body.address,
+        attachedFileUrlOfBusinessLicense: body.address
+      }
+    })
+
+    if (!center) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
+
+    return center;
   }
 
-  async findAll(id: number | bigint) {
-    (BigInt.prototype as any).toJSON = function () {
-      return parseInt(this.toString());
-    };
-    try {
-      const centers = this.prismaService.center.findMany({
-        where: {
-          adminId: id
-        }
-      });
-      console.log(centers);
+  async parkingLotCreate(centerId: number, body: CreateCenterParkingLotDto): Promise<CenterParkingLotsModel> {
+    const parkingLot = await this.prismaService.centerParkingLots.create({
+      data: {
+        centerId: centerId,
+        isAvailable: body.isAvailable,
+        paymentTypeCode: body.paymentTypeCode,
+        firstTime: body.firstTime,
+        firstTimeCharge: body.firstTimeCharge,
+        additionTime: body.additionTime,
+        additionTimeCharge: body.additionTimeCharge,
+        maximumCharge: body.maximumCharge,
+        oneTimeCharge: body.oneTimeCharge,
+        description: body.description
+      }
+    })
 
-      return centers;
-    } catch (e) {
-      console.log(e);
-      // if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      //   if (e.code === 'P2002')
-      //     throw new UnauthorizedException(UNAUTHORIZED_TYPE.USER_EXIST);
-      // }
-      // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
-    }
+    return parkingLot
+  }
+
+  async centerFindAll(userId: number): Promise<CentersModel[]> {
+    const centers = this.prismaService.centers.findMany({
+      where: {
+        adminId: userId
+      }
+    });
+
+    return centers;
+  }
+
+  async centerDelete(centerId: number): Promise<CentersModel> {
+    const center = this.prismaService.centers.delete({
+      where: {
+        id: centerId
+      }
+    });
+
+    return center;
+  }
+
+
+  async centerFindOne(centerId: number): Promise<CentersModel> {
+    const center = this.prismaService.centers.findUnique({
+      where: {
+        id: centerId
+      }
+    });
+
+    return center;
   }
 
   async getGeoCodingService(address: string): Promise<any> {
@@ -100,17 +116,5 @@ export class CenterService {
     });
 
     return smsRes;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} center`;
-  }
-
-  update(id: number, updateCenterDto: UpdateCenterDto) {
-    return `This action updates a #${id} center`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} center`;
   }
 }

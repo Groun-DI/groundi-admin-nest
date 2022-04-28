@@ -24,20 +24,24 @@ export class CreateCenterDto {
     @IsNotEmpty()
     @IsString()
     readonly phoneNumber: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly busniessLicenseNumber: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly attachedFileUrlOfBusinessLicense: string;
 }
 
 export class CreateCenterParkingLotDto {
-    @IsNotEmpty()
-    @IsNumber()
-    readonly centerId: number;
-
     @IsNotEmpty()
     @IsBoolean()
     readonly isAvailable: boolean;
 
     @IsNotEmpty()
     @IsString()
-    readonly paymentType: string;
+    readonly paymentTypeCode: string;
 
     @IsNotEmpty()
     @IsString()
@@ -45,7 +49,7 @@ export class CreateCenterParkingLotDto {
 
     @IsNotEmpty()
     @IsNumber()
-    readonly firstPayment: number;
+    readonly firstTimeCharge: number;
 
     @IsNotEmpty()
     @IsString()
@@ -53,17 +57,17 @@ export class CreateCenterParkingLotDto {
 
     @IsNotEmpty()
     @IsNumber()
-    readonly additionPayment: number;
+    readonly additionTimeCharge: number;
 
     @IsNotEmpty()
     @IsNumber()
-    readonly allDayPayment: number;
+    readonly oneTimeCharge: number;
 
     @IsNotEmpty()
     @IsNumber()
-    readonly oneTimePayment: number;
+    readonly maximumCharge: number;
 
     @IsNotEmpty()
     @IsString()
-    readonly content: string;
+    readonly description: string;
 }

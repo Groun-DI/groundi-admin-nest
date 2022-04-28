@@ -4,7 +4,7 @@ import { TempStudioService } from './tempStudio.service';
 import { CreateTempStudioDto } from './dto/create-temp-studio.dto';
 import { UpdateTempStudioDto } from './dto/update-temp-studio.dto';
 import { JwtAuthGuard } from 'src/auth-guard/jwt/jwt.auth-guard';
-import { Studio as StudioModel } from '@prisma/client';
+import { Studios as StudiosModel } from '@prisma/client';
 
 @UseGuards(JwtAuthGuard)
 @Controller('temp-studio')
@@ -18,7 +18,7 @@ export class TempStudioController {
   }
 
   @Get(':centerId')
-  findAll(@Param('centerId') centerId: number):Promise<StudioModel[]> {
+  findAll(@Param('centerId') centerId: number):Promise<StudiosModel[]> {
     return this.tempStudioService.findAll(centerId);
   }
 

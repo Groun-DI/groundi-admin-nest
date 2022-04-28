@@ -23,7 +23,7 @@ export class AuthService {
   ) {}
 
   async login(body: LoginReq): Promise<TokenRes> {
-    let userEntity = await this.prismaService.placeAdmin.findUnique({
+    let userEntity = await this.prismaService.centerAdmins.findUnique({
       where: { email: body.email },
       select: { id: true, password: true, phoneNumber: true },
     });
@@ -44,13 +44,12 @@ export class AuthService {
   async createMember(body: CreateUserReq): Promise<TokenRes> {
     let user: { id: bigint };
     try {
-      user = await this.prismaService.placeAdmin.create({
+      user = await this.prismaService.centerAdmins.create({
         data: {
           password: await this.hash(body.password),
           phoneNumber: body.phoneNumber,
           name: body.name,
-          email: body.email,
-          profileImage: body.profileImage
+          email: body.email
         },
         select: {
           id: true,

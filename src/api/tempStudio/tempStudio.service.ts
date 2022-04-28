@@ -4,7 +4,7 @@ import { BaseBizException, Exceptions } from 'src/errors/http-exceptions';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateTempStudioDto } from './dto/create-temp-studio.dto';
 import { UpdateTempStudioDto } from './dto/update-temp-studio.dto';
-import { Studio as StudioModel } from '@prisma/client';
+import { Studios as StudiosModel } from '@prisma/client';
 
 @Injectable()
 export class TempStudioService {
@@ -13,20 +13,20 @@ export class TempStudioService {
     let studio: { id: number | bigint };
 
     const createAmenities = body.amenities.map((item) => ({
-      AmenityList: {
+      Amenities: {
         connect: { id: item },
       },
     }
     ));
     const createPrecautions = body.precautions.map((item) => ({
-      PrecautionList: {
+      Precautions: {
         connect: { id: Number(item) },
       },
     }
     ));
 
     const createComplimentaries = body.complimentaries.map((item) => ({
-      ComplimentaryList: {
+      Complimentaries: {
         connect: { id: item },
       },
     }
@@ -54,19 +54,17 @@ export class TempStudioService {
         }
       });
 
-      await this.prismaService.centerParkingLot.create({
+      await this.prismaService.centerParkingLots.create({
         data:{
           isAvailable: body.parkingIsAvailable,
-          paymentType: body.parkingPaymentType,
-          firstHour: body.parkingFirstHour,
-          firstMinute: body.parkingFirstMinute,
-          firstPayment: body.parkingFirstPayment,
-          additionHour: body.parkingAdditionHour,
-          additionMinute: body.parkingAdditionMinute,
-          additionPayment: body.parkingAdditionPayment,
-          allDayPayment: body.parkingAllDayPayment,
-          oneTimePayment: body.parkingOneTimePayment,
-          content: body.parkingContent
+          paymentTypeCode: body.parkingPaymentType,
+          firstTime: body.parkingFirstHour,
+          firstTimeCharge: body.parkingFirstPayment,
+          additionTime: body.parkingAdditionHour,
+          additionTimeCharge: body.parkingAdditionPayment,
+          maximumCharge: body.parkingAllDayPayment,
+          oneTimeCharge: body.parkingOneTimePayment,
+          description: body.parkingContent
         }
       })
     } catch (e) {
@@ -75,8 +73,8 @@ export class TempStudioService {
     return Number(studio.id);
   }
 
-  async findAll(centerId: number):Promise<StudioModel[]> {
-    const studios = await this.prismaService.studio.findMany({
+  async findAll(centerId: number):Promise<StudiosModel[]> {
+    const studios = await this.prismaService.studios.findMany({
       where: { centerId: centerId },
     });
     
