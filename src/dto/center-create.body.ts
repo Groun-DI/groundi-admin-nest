@@ -28,10 +28,6 @@ export class CreateCenterDto {
     @IsNotEmpty()
     @IsString()
     readonly busniessLicenseNumber: string;
-
-    @IsNotEmpty()
-    @IsString()
-    readonly attachedFileUrlOfBusinessLicense: string;
 }
 
 export class CreateCenterParkingLotDto {

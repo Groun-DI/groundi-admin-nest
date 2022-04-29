@@ -1,9 +1,10 @@
-import { UseGuards, Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { UseGuards, Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFile, Patch } from '@nestjs/common';
 import { CenterService } from './center.service';
 import { CreateCenterDto, CreateCenterParkingLotDto } from '../../dto/center-create.body';
 import { UpdateCenterDto } from '../../dto/center-update.body';
 import { JwtAuthGuard, JwtModel } from 'src/auth-guard/jwt/jwt.auth-guard';
 import { User } from '../../decorators/user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/center')
@@ -11,8 +12,16 @@ export class CenterController {
   constructor(private readonly centerService: CenterService) { }
 
   @Post()
-  centerCreate(@User() user: JwtModel, @Body() createCenterDto: CreateCenterDto) {
-    return this.centerService.centerCreate(+user.id, createCenterDto);
+  @UseInterceptors(FileInterceptor('file'))
+  centerCreate(@User() user: JwtModel, @UploadedFile() busniessLicenseFile: Express.Multer.File, @Body() createCenterDto: CreateCenterDto) {
+    return this.centerService.centerCreate(+user.id, busniessLicenseFile, createCenterDto);
+  }
+
+  @Post(':centerId/file')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: string) {
+    console.log(file);
+    console.log(body);
   }
 
   @Post(':centerId/parkinglot')
@@ -31,9 +40,11 @@ export class CenterController {
   }
 
   @Patch(':centerId')
-  centerUpdate(@Param('centerId') centerId: number, @Body() updateCenterDto: UpdateCenterDto) {
-    return this.centerService.centerUpdate(+centerId, updateCenterDto);
+  @UseInterceptors(FileInterceptor('busniessLicenseFile'))
+  centerUpdate(@Param('centerId') centerId: number, @UploadedFile() busniessLicenseFile: Express.Multer.File, @Body() updateCenterDto: UpdateCenterDto) {
+    return this.centerService.centerUpdate(+centerId, busniessLicenseFile, updateCenterDto);
   }
+
 
   @Delete(':centerId')
   delete(@Param('centerId') centerId: number) {

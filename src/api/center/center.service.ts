@@ -3,21 +3,24 @@ import { AuthorizationService } from 'src/services/authorization/authorization.s
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateCenterDto, CreateCenterParkingLotDto } from '../../dto/center-create.body';
 import { UpdateCenterDto } from '../../dto/center-update.body';
-import { Prisma } from '@prisma/client';
 import { BaseBizException, Exceptions } from '../../errors/http-exceptions';
 import { NaverGeocodingService } from 'src/services/naver-geocoding/naver-geocoding.service';
 import { Centers as CentersModel } from "@prisma/client";
 import { CenterParkingLots as CenterParkingLotsModel } from "@prisma/client";
+import { S3Service } from 'src/services/s3/s3.service';
 
 @Injectable()
 export class CenterService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly authorizationService: AuthorizationService,
-    private readonly naverGeocodingService: NaverGeocodingService
+    private readonly naverGeocodingService: NaverGeocodingService,
+    private readonly s3Service: S3Service
   ) { }
 
-  async centerCreate(userId: number, body: CreateCenterDto): Promise<CentersModel> {
+
+  async centerCreate(userId: number, busniessLicenseFile: Express.Multer.File, body: CreateCenterDto): Promise<CentersModel> {
+    const uploadFile = await this.s3Service.uploadImage(busniessLicenseFile);
+
     const center = await this.prismaService.centers.create({
       data: {
         adminId: userId,
@@ -25,10 +28,10 @@ export class CenterService {
         address: body.address,
         detailAddress: body.detailAddress,
         phoneNumber: body.phoneNumber,
-        latitude: body.latitude,
-        longitude: body.longitude,
+        latitude: +body.latitude,
+        longitude: +body.longitude,
         busniessLicenseNumber: body.address,
-        attachedFileUrlOfBusinessLicense: body.address
+        attachedFileUrlOfBusinessLicense: uploadFile.Location
       }
     })
 
@@ -38,7 +41,13 @@ export class CenterService {
   }
 
 
-  async centerUpdate(centerId: number, body: UpdateCenterDto): Promise<CentersModel> {
+  async centerUpdate(centerId: number, busniessLicenseFile: Express.Multer.File, body: UpdateCenterDto): Promise<CentersModel> {
+    let uploadFile = undefined;
+    
+    if (busniessLicenseFile) {
+      uploadFile = (await this.s3Service.uploadImage(busniessLicenseFile)).Location;
+    }
+
     const center = await this.prismaService.centers.update({
       where: {
         id: centerId
@@ -50,8 +59,8 @@ export class CenterService {
         phoneNumber: body.phoneNumber,
         latitude: body.latitude,
         longitude: body.longitude,
-        busniessLicenseNumber: body.address,
-        attachedFileUrlOfBusinessLicense: body.address
+        busniessLicenseNumber: body.busniessLicenseNumber,
+        attachedFileUrlOfBusinessLicense: uploadFile
       }
     })
 
