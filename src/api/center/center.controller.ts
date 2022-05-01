@@ -24,9 +24,15 @@ export class CenterController {
     return this.centerService.parkingLotCreate(+centerId, createCenterParkingDto);
   }
 
+
   @Get()
   centerFindAll(@User() user: JwtModel) {
     return this.centerService.centerFindAll(+user.id);
+  }
+
+  @Get('addresses')
+  getAddressesOfSearchResults(@Query('keyword') keyword: string) {
+    return this.centerService.getAddressesOfSearchResults(keyword);
   }
 
   @Get(':centerId')
@@ -49,10 +55,4 @@ export class CenterController {
   delete(@Param('centerId') centerId: number) {
     return this.centerService.centerDelete(+centerId);
   }
-
-  @Get('address')
-  getAddressesOfSearchResults(@Query('address') address: string) {
-    return this.centerService.getAddressesOfSearchResults(address);
-  }
-
 }

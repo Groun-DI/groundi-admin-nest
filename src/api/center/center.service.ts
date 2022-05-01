@@ -9,11 +9,13 @@ import { CenterParkingLots as CenterParkingLotsModel } from "@prisma/client";
 import { S3Service } from 'src/services/s3/s3.service';
 import { CreateCenterParkingLotDto } from 'src/dto/parkinglot-create.body';
 import { ParkingLotUpdateBody } from 'src/dto/parkinglot-update.body';
+import { NaverGeocodingService } from 'src/services/naver-geocoding/naver-geocoding.service';
 
 @Injectable()
 export class CenterService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly naverGeocodingService: NaverGeocodingService,
     private readonly klidSearchAddressService: KlidSearchAddressService,
     private readonly s3Service: S3Service
   ) { }
@@ -140,11 +142,26 @@ export class CenterService {
     return center;
   }
 
-  async getAddressesOfSearchResults(address: string): Promise<any> {
-    const addresses = await this.klidSearchAddressService.getAddressesOfSearchResults(address).catch(() => {
+  async getAddressesOfSearchResults(keyword: string): Promise<any> {
+    const addresses = await this.klidSearchAddressService.getAddressesOfSearchResults(keyword).catch(() => {
       // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     });
 
-    return addresses;
+    return {
+      roadAddr: addresses.roadAddr,
+      zipNo: addresses.zipNo
+    };
+  }
+
+
+  async getAddressesGeocode(address: string): Promise<any> {
+    const addresses = await this.naverGeocodingService.sendAdress(address).catch(() => {
+      // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
+    });
+
+    return {
+      x: addresses.x,
+      y: addresses.y
+    };
   }
 }

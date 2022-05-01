@@ -9,7 +9,7 @@ export class KlidSearchAddressService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) { }
-  async getAddressesOfSearchResults(address: string): Promise<any> {
+  async getAddressesOfSearchResults(keyword: string): Promise<any> {
     const url = 'https://www.juso.go.kr/addrlink/addrLinkApi.do';
     const accessId = 'devU01TX0FVVEgyMDIyMDQzMDE1MDQwNTExMjUyMTY=';
     const resultType = 'json';
@@ -20,14 +20,14 @@ export class KlidSearchAddressService {
         params: {
           currentPage: 1,
           countPerPage: 10,
-          keyword: address,
+          keyword: keyword,
           confmKey: accessId,
           resultType: resultType,
         },
         headers: header,
       })).then((res) => {
         if (res.status < 300) {
-          return res.data;
+          return res.data.results.juso;
         }
       });
   }
