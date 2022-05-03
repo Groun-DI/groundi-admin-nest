@@ -147,21 +147,15 @@ export class CenterService {
       // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     });
 
-    return {
-      roadAddr: addresses.roadAddr,
-      zipNo: addresses.zipNo
-    };
+    return addresses;
   }
 
 
   async getAddressesGeocode(address: string): Promise<any> {
-    const addresses = await this.naverGeocodingService.sendAdress(address).catch(() => {
+    const geocode = await this.naverGeocodingService.sendAdress(address).catch(() => {
       // throw new ForbiddenException(FORBIDDEN_TYPE.TYPE_ERR);
     });
 
-    return {
-      x: addresses.x,
-      y: addresses.y
-    };
+    return geocode;
   }
 }

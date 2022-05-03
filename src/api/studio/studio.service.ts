@@ -10,14 +10,20 @@ import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
 import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
 import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
+import { S3Service } from 'src/services/s3/s3.service';
 
 @Injectable()
 export class StudioService {
   constructor(
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly s3Service: S3Service
   ) { }
 
-  async studioCreate(centerId: number, body: StudioCreateBody) {
+  async studioCreate(centerId: number, images: Array<Express.Multer.File>, body: StudioCreateBody) {
+    const uploadImages = await Promise.all(images.map(async (item) => (
+      await this.s3Service.uploadImage(item)
+      )));
+
     const studio = await this.prismaService.studios.create({
       data: {
         centerId: centerId,
@@ -53,6 +59,12 @@ export class StudioService {
               },
             }))
         },
+        StudioImages: {
+          create: uploadImages.map((item) => ({
+            order: 0,
+            image: item.Location
+          }))
+        }
       }
     });
 
@@ -115,10 +127,10 @@ export class StudioService {
         name: body.name,
         checkInNotice: body.checkInNotice,
         description: body.description,
-        basicOccupancy: body.basicOccupancy,
-        maximumOccupancy: body.maximumOccupancy,
+        basicOccupancy: +body.basicOccupancy,
+        maximumOccupancy: +body.maximumOccupancy,
         refundCode: body.refundCode,
-        extraPrice: body.extraPrice,
+        extraPrice: +body.extraPrice,
         rentalTimeUnitCode: body.rentalTimeUnitCode
       }
     });

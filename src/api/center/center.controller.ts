@@ -24,7 +24,6 @@ export class CenterController {
     return this.centerService.parkingLotCreate(+centerId, createCenterParkingDto);
   }
 
-
   @Get()
   centerFindAll(@User() user: JwtModel) {
     return this.centerService.centerFindAll(+user.id);
@@ -33,6 +32,11 @@ export class CenterController {
   @Get('addresses')
   getAddressesOfSearchResults(@Query('keyword') keyword: string) {
     return this.centerService.getAddressesOfSearchResults(keyword);
+  }
+
+  @Get('geocode')
+  getAddressesGeocode(@Query('keyword') keyword: string) {
+    return this.centerService.getAddressesGeocode(keyword);
   }
 
   @Get(':centerId')

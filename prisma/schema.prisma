@@ -192,32 +192,32 @@ model StudioRegularHolidays {
   studioId    BigInt
   dayOfweekId Int
   DayOfWeeks  DayOfWeeks @relation(fields: [dayOfweekId], references: [id])
-  Studios     Studios   @relation(fields: [studioId], references: [id])
+  Studios     Studios    @relation(fields: [studioId], references: [id])
 
   @@id([studioId, dayOfweekId])
   @@index([dayOfweekId])
 }
 
 model DayOfWeeks {
-  id                Int            @id 
-  dayOfweek         String         @db.VarChar(30)
-  StudioRentalPrices StudioRentalPrices[]
+  id                    Int                     @id
+  dayOfweek             String                  @db.VarChar(30)
   StudioRegularHolidays StudioRegularHolidays[]
+  StudioRentalPrices    StudioRentalPrices[]
 }
 
 model StudioNationalHolidays {
-  studioId    BigInt
+  studioId          BigInt
   nationalHolidayId String
   NationalHolidays  NationalHolidays @relation(fields: [nationalHolidayId], references: [id])
-  Studios     Studios   @relation(fields: [studioId], references: [id])
+  Studios           Studios          @relation(fields: [studioId], references: [id])
 
   @@id([studioId, nationalHolidayId])
   @@index([nationalHolidayId])
 }
 
 model NationalHolidays {
-  id                String         @id @db.VarChar(20)
-  holiday           DateTime       @db.DateTime(0)
+  id                     String                   @id @db.VarChar(20)
+  holiday                DateTime                 @db.DateTime(0)
   StudioNationalHolidays StudioNationalHolidays[]
 }
 
@@ -263,40 +263,41 @@ model StudioPrecautions {
 }
 
 model StudioRentalPrices {
-  id            BigInt   @id @default(autoincrement())
-  studioId      BigInt
-  dayOfweekId   Int
-  createdAt     DateTime @default(now()) @db.DateTime(0)
-  price         Int
-  startAt       DateTime @db.Time(0)
-  Studios       Studios  @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioRentalPrices_ibfk_1")
-  DayOfWeeks    DayOfWeeks  @relation(fields: [dayOfweekId], references: [id])
+  id          BigInt     @id @default(autoincrement())
+  studioId    BigInt
+  createdAt   DateTime   @default(now()) @db.DateTime(0)
+  price       Int
+  startAt     DateTime   @db.Time(0)
+  dayOfweekId Int
+  DayOfWeeks  DayOfWeeks @relation(fields: [dayOfweekId], references: [id])
+  Studios     Studios    @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioRentalPrices_ibfk_1")
 
+  @@index([dayOfweekId], map: "StudioRentalPrices_dayOfweekId_fkey")
   @@index([studioId])
 }
 
 model Studios {
-  id                      BigInt                  @id @default(autoincrement())
-  centerId                BigInt
-  createdAt               DateTime                @default(now()) @db.DateTime(0)
-  updateAt                DateTime                @default(now()) @db.DateTime(0)
-  name                    String                  @db.VarChar(40)
-  description             String                  @db.Text
-  checkInNotice           String?                 @db.Text
-  basicOccupancy          Int
-  maximumOccupancy        Int
-  extraPrice              Int
-  rentalTimeUnitCode      String                  @db.VarChar(10)
-  refundCode              String                  @db.VarChar(10)
-  Centers                 Centers                 @relation(fields: [centerId], references: [id], map: "Studio_centerId_fkey")
-  StudioRegularHolidays   StudioRegularHolidays[]
-  StudioNationalHolidays  StudioNationalHolidays[]
-  StudioAmenities         StudioAmenities[]
-  StudioComplimentaries   StudioComplimentaries[]
-  StudioHoliday           StudioHoliday[]
-  StudioImages            StudioImages[]
-  StudioPrecautions       StudioPrecautions[]
-  StudioRentalPrices      StudioRentalPrices[]
+  id                     BigInt                   @id @default(autoincrement())
+  centerId               BigInt
+  createdAt              DateTime                 @default(now()) @db.DateTime(0)
+  updateAt               DateTime                 @default(now()) @db.DateTime(0)
+  name                   String                   @db.VarChar(40)
+  description            String                   @db.Text
+  checkInNotice          String?                  @db.Text
+  basicOccupancy         Int
+  maximumOccupancy       Int
+  extraPrice             Int
+  rentalTimeUnitCode     String                   @db.VarChar(10)
+  refundCode             String                   @db.VarChar(10)
+  Centers                Centers                  @relation(fields: [centerId], references: [id], map: "Studio_centerId_fkey")
+  StudioAmenities        StudioAmenities[]
+  StudioComplimentaries  StudioComplimentaries[]
+  StudioHoliday          StudioHoliday[]
+  StudioImages           StudioImages[]
+  StudioNationalHolidays StudioNationalHolidays[]
+  StudioPrecautions      StudioPrecautions[]
+  StudioRegularHolidays  StudioRegularHolidays[]
+  StudioRentalPrices     StudioRentalPrices[]
 
   @@index([centerId], map: "Studio_centerId_idx")
 }
