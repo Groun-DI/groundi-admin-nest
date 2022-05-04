@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { DailyRentalPriceCreateBody } from 'src/dto/daily-rental-price-create.body';
+import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 import { DailyStatusCreateBody } from 'src/dto/daily-status-create.body';
 import { DailyStatusUpdateBody } from 'src/dto/daily-status-update.body';
 import { HolidayCreateBody } from 'src/dto/holiday-create-body';
@@ -22,7 +22,7 @@ export class RentalTimeManagementController {
   }
 
   @Post('daily-rental-price')
-  dailyRentalPriceCreate(@Param('studioId') studioId: number, @Body() body: DailyRentalPriceCreateBody) {
+  dailyRentalPriceCreate(@Param('studioId') studioId: number, @Body() body: RentalPriceCreateBody) {
     return this.rentalTimeManagementService.dailyRentalPriceCreate(body);
   }
 

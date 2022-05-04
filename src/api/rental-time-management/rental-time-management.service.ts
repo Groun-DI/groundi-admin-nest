@@ -4,7 +4,7 @@ import { StudioHoliday as StudioHolidayModel } from '@prisma/client';
 import { BaseBizException, Exceptions } from 'src/errors/http-exceptions';
 import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { DailyStatusCreateBody } from 'src/dto/daily-status-create.body';
-import { DailyRentalPriceCreateBody } from 'src/dto/daily-rental-price-create.body';
+import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 import { HolidayUpdateBody } from 'src/dto/holiday-update.body';
 import { DailyStatusUpdateBody } from 'src/dto/daily-status-update.body';
 
@@ -43,8 +43,8 @@ export class RentalTimeManagementService {
     return `This action returns all studioOpenStatusPerWeek`;
   }
 
-  async dailyRentalPriceCreate(body: DailyRentalPriceCreateBody) {
-    
+  async dailyRentalPriceCreate(body: RentalPriceCreateBody) {
+
     return 'This action adds a new studioDailyRentalTimePrice';
   }
 

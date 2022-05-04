@@ -11,6 +11,7 @@ import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
 import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 import { S3Service } from 'src/services/s3/s3.service';
+import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 
 @Injectable()
 export class StudioService {
@@ -22,11 +23,15 @@ export class StudioService {
   async studioCreate(centerId: number, images: Array<Express.Multer.File>, body: StudioCreateBody) {
     const uploadImages = await Promise.all(images.map(async (item) => (
       await this.s3Service.uploadImage(item)
-      )));
+    )));
 
     const studio = await this.prismaService.studios.create({
       data: {
-        centerId: centerId,
+        Centers: {
+          connect: {
+            id: centerId
+          }
+        },
         name: body.name,
         checkInNotice: body.checkInNotice,
         description: body.description,
@@ -71,6 +76,27 @@ export class StudioService {
     if (!studio) throw new BaseBizException(Exceptions.CREATE_STUDIO_FAILED);
 
     return studio;
+  }
+
+  async rentalPriceCreate(studioId: number, body: RentalPriceCreateBody) {
+    const res = await this.prismaService.studioRentalPrices.create({
+      data: {
+        Studios: {
+          connect: {
+            id: studioId
+          }
+        },
+        startAt: body.startAt,
+        price: body.price,
+        DayOfWeeks: {
+          connect: {
+            id: body.dayOfweekId
+          }
+        }
+      }
+    });
+
+    return res;
   }
 
   studioImageCreate(studioId: number, body: StudioImageCreateBody) {

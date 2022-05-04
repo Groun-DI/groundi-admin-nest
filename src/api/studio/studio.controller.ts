@@ -11,6 +11,7 @@ import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
 import { Studio } from 'src/decorators/studio.decorator';
+import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/centers/:centerId/studios')
@@ -21,6 +22,11 @@ export class StudioController {
   @UseInterceptors(FilesInterceptor('images'))
   studioCreate(@Param('centerId') centerId: number, @UploadedFiles() images: Array<Express.Multer.File>, @Studio() body: StudioCreateBody) {
     return this.studioService.studioCreate(+centerId, images, body);
+  }
+
+  @Post(':studioId/rental-prices')
+  rentalPriceCreate(@Param('studioId') studioId: number, @Body() body: RentalPriceCreateBody) {
+    return this.studioService.rentalPriceCreate(+studioId, body);
   }
 
   @Get()
