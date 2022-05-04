@@ -12,6 +12,8 @@ import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { ComplimentaryUpdateBody } from 'src/dto/complimentary-update';
 import { S3Service } from 'src/services/s3/s3.service';
 import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
+import { HolidayCreateBody } from 'src/dto/holiday-create-body';
+import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
 
 @Injectable()
 export class StudioService {
@@ -99,6 +101,40 @@ export class StudioService {
     return res;
   }
 
+  async holidaysCreate(studioId: number, body: HolidayCreateBody) {
+    const res = await this.prismaService.studioHoliday.create({
+      data: {
+        Studios: {
+          connect: {
+            id: studioId
+          }
+        },
+        date: body.date,
+        reason: body.reason
+      }
+    });
+
+    return res;
+  }
+
+  async nationalHolidaysCreate(studioId: number, body: NationalHolidayCreateBody) {
+    const res = await this.prismaService.studioNationalHolidays.create({
+      data: {
+        Studios: {
+          connect: {
+            id: studioId
+          }
+        },
+        NationalHolidays: {
+          connect: {
+            id: body.nationalHolidayId
+          }
+        }
+      }
+    });
+
+    return res;
+  }
   studioImageCreate(studioId: number, body: StudioImageCreateBody) {
     return '';
   }

@@ -12,6 +12,8 @@ import { PrecautionUpdateBody } from 'src/dto/precaution-update.body';
 import { StudioImageUpdateBody } from 'src/dto/studio-image-update';
 import { Studio } from 'src/decorators/studio.decorator';
 import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
+import { HolidayCreateBody } from 'src/dto/holiday-create-body';
+import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/centers/:centerId/studios')
@@ -27,6 +29,17 @@ export class StudioController {
   @Post(':studioId/rental-prices')
   rentalPriceCreate(@Param('studioId') studioId: number, @Body() body: RentalPriceCreateBody) {
     return this.studioService.rentalPriceCreate(+studioId, body);
+  }
+
+  @Post(':studioId/holidays')
+  holidaysCreate(@Param('studioId') studioId: number, @Body() body: HolidayCreateBody) {
+    return this.studioService.holidaysCreate(+studioId, body);
+  }
+
+
+  @Post(':studioId/national-holidays')
+  nationalHolidaysCreate(@Param('studioId') studioId: number, @Body() body: NationalHolidayCreateBody) {
+    return this.studioService.nationalHolidaysCreate(+studioId, body);
   }
 
   @Get()
