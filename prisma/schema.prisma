@@ -15,23 +15,9 @@ model FcmToken {
   fcmToken  String?  @db.VarChar(200)
   deviceId  String   @unique @db.VarChar(200)
   id        BigInt   @id @default(autoincrement())
-  User      User     @relation(fields: [userId], references: [id])
+  Users     Users    @relation(fields: [userId], references: [id])
 
   @@index([userId])
-}
-
-model User {
-  createdAt   DateTime   @default(now()) @db.DateTime(0)
-  updatedAt   DateTime   @default(now()) @db.DateTime(0)
-  phoneNumber String     @unique @db.Char(11)
-  birthday    String     @db.Char(8)
-  gender      String     @db.Char(1)
-  email       String     @unique @db.VarChar(50)
-  password    String     @db.VarChar(64)
-  name        String     @db.VarChar(8)
-  id          BigInt     @id @default(autoincrement())
-  FcmToken    FcmToken[]
-  Payment     Payment[]
 }
 
 model StudioHoliday {
@@ -55,7 +41,7 @@ model Payment {
   updatedAt  DateTime  @default(now()) @db.DateTime(0)
   isDeleted  Boolean   @default(false)
   cardName   String    @db.VarChar(10)
-  User       User      @relation(fields: [userId], references: [id])
+  Users      Users     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
@@ -266,8 +252,8 @@ model StudioRentalPrices {
   id          BigInt     @id @default(autoincrement())
   studioId    BigInt
   createdAt   DateTime   @default(now()) @db.DateTime(0)
-    startAt     DateTime   @db.Time(0)
   price       Int
+  startAt     DateTime   @db.Time(0)
   dayOfweekId Int
   DayOfWeeks  DayOfWeeks @relation(fields: [dayOfweekId], references: [id])
   Studios     Studios    @relation(fields: [studioId], references: [id])
@@ -277,27 +263,63 @@ model StudioRentalPrices {
 }
 
 model Studios {
-  id                     BigInt                   @id @default(autoincrement())
-  centerId               BigInt
-  createdAt              DateTime                 @default(now()) @db.DateTime(0)
-  updateAt               DateTime                 @default(now()) @db.DateTime(0)
-  name                   String                   @db.VarChar(40)
-  description            String                   @db.Text
-  checkInNotice          String?                  @db.Text
-  basicOccupancy         Int
-  maximumOccupancy       Int
-  extraPrice             Int
-  rentalTimeUnitCode     String                   @db.VarChar(10)
-  refundCode             String                   @db.VarChar(10)
-  Centers                Centers                  @relation(fields: [centerId], references: [id])
-  StudioAmenities        StudioAmenities[]
-  StudioComplimentaries  StudioComplimentaries[]
-  StudioHoliday          StudioHoliday[]
-  StudioImages           StudioImages[]
-  StudioNationalHolidays StudioNationalHolidays[]
-  StudioPrecautions      StudioPrecautions[]
-  StudioRegularHolidays  StudioRegularHolidays[]
-  StudioRentalPrices     StudioRentalPrices[]
+  id                       BigInt                     @id @default(autoincrement())
+  centerId                 BigInt
+  createdAt                DateTime                   @default(now()) @db.DateTime(0)
+  updateAt                 DateTime                   @default(now()) @db.DateTime(0)
+  name                     String                     @db.VarChar(40)
+  description              String                     @db.Text
+  checkInNotice            String?                    @db.Text
+  basicOccupancy           Int
+  maximumOccupancy         Int
+  extraPrice               Int
+  rentalTimeUnitCode       String                     @db.VarChar(10)
+  refundCode               String                     @db.VarChar(10)
+  Centers                  Centers                    @relation(fields: [centerId], references: [id])
+  StudioAmenities          StudioAmenities[]
+  StudioComplimentaries    StudioComplimentaries[]
+  StudioHoliday            StudioHoliday[]
+  StudioImages             StudioImages[]
+  StudioNationalHolidays   StudioNationalHolidays[]
+  StudioPrecautions        StudioPrecautions[]
+  StudioRegularHolidays    StudioRegularHolidays[]
+  StudioRentalPrices       StudioRentalPrices[]
+  StudioRentalRequestForms StudioRentalRequestForms[]
 
   @@index([centerId])
+}
+
+model StudioRentalRequestForms {
+  id               BigInt   @id @default(autoincrement())
+  studioId         BigInt
+  userId           BigInt
+  createdAt        DateTime @default(now()) @db.DateTime(0)
+  updatedAt        DateTime @default(now()) @db.DateTime(0)
+  date             DateTime @db.Date
+  time             DateTime @db.Time(0)
+  price            Int
+  numberOfpeople   Int
+  discription      String   @db.VarChar(255)
+  rentalTypeCode   String   @db.VarChar(20)
+  responseTypeCode String   @db.VarChar(20)
+  Studios          Studios  @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioRentalRequestForms_ibfk_1")
+  Users            Users    @relation(fields: [userId], references: [id], onDelete: NoAction, map: "StudioRentalRequestForms_ibfk_2")
+
+  @@index([studioId], map: "studioId")
+  @@index([userId], map: "userId")
+}
+
+model Users {
+  createdAt                DateTime                   @default(now()) @db.DateTime(0)
+  updatedAt                DateTime                   @default(now()) @db.DateTime(0)
+  phoneNumber              String                     @unique(map: "User_phoneNumber_key") @db.Char(11)
+  birthday                 String                     @db.Char(8)
+  gender                   String                     @db.Char(1)
+  email                    String                     @unique(map: "User_email_key") @db.VarChar(50)
+  password                 String                     @db.VarChar(64)
+  name                     String                     @db.VarChar(8)
+  id                       BigInt                     @id @default(autoincrement())
+  FcmToken                 FcmToken[]
+  Payment                  Payment[]
+  StudioRentalRequestForms StudioRentalRequestForms[]
 }

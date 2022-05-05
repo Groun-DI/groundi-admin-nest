@@ -4,6 +4,7 @@ import { StudioService } from './studio.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth-guard/jwt/jwt.auth-guard';
 import { Studios as StudioModel } from '@prisma/client';
+import { StudioRentalPrices as StudioRentalPricesModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioUpdateBody } from 'src/dto/studio-update';
 import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
@@ -36,7 +37,6 @@ export class StudioController {
     return this.studioService.holidaysCreate(+studioId, body);
   }
 
-
   @Post(':studioId/national-holidays')
   nationalHolidaysCreate(@Param('studioId') studioId: number, @Body() body: NationalHolidayCreateBody) {
     return this.studioService.nationalHolidaysCreate(+studioId, body);
@@ -50,6 +50,11 @@ export class StudioController {
   @Get(':studioId')
   studioFindOne(@Param('studioId') studioId: string): Promise<StudioModel> {
     return this.studioService.studioFindOne(+studioId);
+  }
+
+  @Get(':studioId/rental-prices')
+  rentalPriceFindAll(@Param('studioId') studioId: string): Promise<StudioRentalPricesModel[]> {
+    return this.studioService.rentalPriceFindAll(+studioId);
   }
 
   @Patch(':studioId')

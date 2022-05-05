@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { StudioRentalPrices as StudioRentalPricesModel } from '@prisma/client';
 import { BaseBizException, Exceptions } from "../../errors/http-exceptions";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { Studios as StudioModel } from '@prisma/client';
@@ -220,6 +220,16 @@ export class StudioService {
     });
 
     return studio;
+  }
+
+  async rentalPriceFindAll(studioId:number):Promise<StudioRentalPricesModel[]>{
+    const res = await this.prismaService.studioRentalPrices.findMany({
+      where:{
+        studioId: studioId
+      }
+    });
+
+    return res;
   }
 
   async studioFindAll(centerId: number) {
