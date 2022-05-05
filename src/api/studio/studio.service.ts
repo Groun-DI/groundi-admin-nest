@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StudioRentalPrices as StudioRentalPricesModel } from '@prisma/client';
+import { StudioRentalReceipts as StudioRentalReceiptsModel } from '@prisma/client';
 import { BaseBizException, Exceptions } from "../../errors/http-exceptions";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { Studios as StudioModel } from '@prisma/client';
@@ -14,6 +15,7 @@ import { S3Service } from 'src/services/s3/s3.service';
 import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
+import { DateFilterDto } from 'src/dto/date-filter.body';
 
 @Injectable()
 export class StudioService {
@@ -222,10 +224,26 @@ export class StudioService {
     return studio;
   }
 
-  async rentalPriceFindAll(studioId:number):Promise<StudioRentalPricesModel[]>{
+  async rentalPriceFindAll(studioId: number): Promise<StudioRentalPricesModel[]> {
     const res = await this.prismaService.studioRentalPrices.findMany({
-      where:{
+      where: {
         studioId: studioId
+      }
+    });
+
+    return res;
+  }
+
+  async rentalReceiptsFindAll(studioId: number, dateFilter: DateFilterDto): Promise<StudioRentalReceiptsModel[]> {
+    const res = await this.prismaService.studioRentalReceipts.findMany({
+      where: {
+        StudioRentalRequestForms: {
+          studioId: studioId,
+          date: {
+            lte: dateFilter.startDate != null ? dateFilter.startDate : undefined,
+            gte: dateFilter.endDate != null ? dateFilter.endDate : undefined
+          }
+        },
       }
     });
 

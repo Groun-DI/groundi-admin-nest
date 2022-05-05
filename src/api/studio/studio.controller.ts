@@ -1,10 +1,11 @@
 
-import { UseInterceptors, UploadedFiles, Controller, Get, Post, Body, Param, Delete, UseGuards, Put, Patch } from '@nestjs/common';
+import { UseInterceptors, UploadedFiles, Controller, Get, Post, Body, Param, Delete, UseGuards, Put, Patch, Query } from '@nestjs/common';
 import { StudioService } from './studio.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth-guard/jwt/jwt.auth-guard';
 import { Studios as StudioModel } from '@prisma/client';
 import { StudioRentalPrices as StudioRentalPricesModel } from '@prisma/client';
+import { StudioRentalReceipts as StudioRentalReceiptsModel } from '@prisma/client';
 import { StudioCreateBody } from 'src/dto/studio-create.body';
 import { StudioUpdateBody } from 'src/dto/studio-update';
 import { AmenityUpdateBody } from 'src/dto/amenity-update.body';
@@ -15,6 +16,8 @@ import { Studio } from 'src/decorators/studio.decorator';
 import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
+import { DateFilter } from 'src/decorators/filter/date.decorator';
+import { DateFilterDto } from 'src/dto/date-filter.body';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/centers/:centerId/studios')
@@ -55,6 +58,12 @@ export class StudioController {
   @Get(':studioId/rental-prices')
   rentalPriceFindAll(@Param('studioId') studioId: string): Promise<StudioRentalPricesModel[]> {
     return this.studioService.rentalPriceFindAll(+studioId);
+  }
+
+
+  @Get(':studioId/rental-receipts')
+  rentalReceiptsFindAll(@Param('studioId') studioId: string, @DateFilter() dateFilter: DateFilterDto): Promise<StudioRentalReceiptsModel[]> {
+    return this.studioService.rentalReceiptsFindAll(+studioId, dateFilter);
   }
 
   @Patch(':studioId')
