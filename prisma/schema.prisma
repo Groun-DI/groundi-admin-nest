@@ -329,7 +329,6 @@ model StudioRentalReceipts {
   id                       BigInt                   @id @default(autoincrement())
   rentalRequestFormId      BigInt
   createdAt                DateTime                 @default(now()) @db.DateTime(0)
-  cardNumber               String?                  @db.Char(12)
   receiptNumber            String?                  @db.VarChar(255)
   StudioRentalRequestForms StudioRentalRequestForms @relation(fields: [rentalRequestFormId], references: [id], onDelete: NoAction, map: "StudioRentalReceipts_ibfk_1")
 

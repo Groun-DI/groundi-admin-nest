@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { StudioRentalPrices as StudioRentalPricesModel } from '@prisma/client';
 import { StudioRentalReceipts as StudioRentalReceiptsModel } from '@prisma/client';
+import { StudioRentalRequestForms as StudioRentalRequestFormsModel } from '@prisma/client';
 import { BaseBizException, Exceptions } from "../../errors/http-exceptions";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { Studios as StudioModel } from '@prisma/client';
@@ -17,6 +18,7 @@ import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
 import { DateFilterDto } from 'src/dto/date-filter.body';
 import { RentalReceiptCreateBody } from 'src/dto/rental-receipt-create.body';
+import { RentalRequestFormsCreateBody } from 'src/dto/rental-request-form-create.body copy';
 
 @Injectable()
 export class StudioService {
@@ -150,6 +152,30 @@ export class StudioService {
             id: body.nationalHolidayId
           }
         }
+      }
+    });
+
+    return res;
+  }
+
+  async rentalRequestFormsCreate(userId: number, studioId: number, body: RentalRequestFormsCreateBody): Promise<StudioRentalRequestFormsModel> {
+    const res = await this.prismaService.studioRentalRequestForms.create({
+      data: {
+        Users: {
+          connect: {
+            id: userId
+          }
+        },
+        Studios: {
+          connect: { id: studioId }
+        },
+        date: body.date,
+        time: body.time,
+        price: body.price,
+        numberOfpeople: body.numberOfpeople,
+        discription: body.discription,
+        rentalTypeCode: body.rentalTypeCode,
+        responseTypeCode: body.responseTypeCode
       }
     });
 
