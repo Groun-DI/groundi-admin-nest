@@ -290,20 +290,21 @@ model Studios {
 }
 
 model StudioRentalRequestForms {
-  id               BigInt   @id @default(autoincrement())
-  studioId         BigInt
-  userId           BigInt
-  createdAt        DateTime @default(now()) @db.DateTime(0)
-  updatedAt        DateTime @default(now()) @db.DateTime(0)
-  date             DateTime @db.Date
-  time             DateTime @db.Time(0)
-  price            Int
-  numberOfpeople   Int
-  discription      String   @db.VarChar(255)
-  rentalTypeCode   String   @db.VarChar(20)
-  responseTypeCode String   @db.VarChar(20)
-  Studios          Studios  @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioRentalRequestForms_ibfk_1")
-  Users            Users    @relation(fields: [userId], references: [id], onDelete: NoAction, map: "StudioRentalRequestForms_ibfk_2")
+  id                   BigInt                 @id @default(autoincrement())
+  studioId             BigInt
+  userId               BigInt
+  createdAt            DateTime               @default(now()) @db.DateTime(0)
+  updatedAt            DateTime               @default(now()) @db.DateTime(0)
+  date                 DateTime               @db.Date
+  time                 DateTime               @db.Time(0)
+  price                Int
+  numberOfpeople       Int
+  discription          String                 @db.VarChar(255)
+  rentalTypeCode       String                 @db.VarChar(20)
+  responseTypeCode     String                 @db.VarChar(20)
+  Studios              Studios                @relation(fields: [studioId], references: [id], onDelete: NoAction, map: "StudioRentalRequestForms_ibfk_1")
+  Users                Users                  @relation(fields: [userId], references: [id], onDelete: NoAction, map: "StudioRentalRequestForms_ibfk_2")
+  StudioRentalReceipts StudioRentalReceipts[]
 
   @@index([studioId], map: "studioId")
   @@index([userId], map: "userId")
@@ -322,4 +323,15 @@ model Users {
   FcmToken                 FcmToken[]
   Payment                  Payment[]
   StudioRentalRequestForms StudioRentalRequestForms[]
+}
+
+model StudioRentalReceipts {
+  id                       BigInt                   @id @default(autoincrement())
+  rentalRequestFormId      BigInt
+  createdAt                DateTime                 @default(now()) @db.DateTime(0)
+  cardNumber               String?                  @db.Char(12)
+  receiptNumber            String?                  @db.VarChar(255)
+  StudioRentalRequestForms StudioRentalRequestForms @relation(fields: [rentalRequestFormId], references: [id], onDelete: NoAction, map: "StudioRentalReceipts_ibfk_1")
+
+  @@index([rentalRequestFormId], map: "rentalRequestFormId")
 }
