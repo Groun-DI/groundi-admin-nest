@@ -13,7 +13,7 @@ import { CenterModule } from './api/center/center.module';
 import { StudioModule } from './api/studio/studio.module';
 import { NaverGeocodingModule } from './services/naver-geocoding/naver-geocoding.module';
 import { TempStudioModule } from './api/tempStudio/tempStudio.module';
-import { RentalTimeManagementModule } from './api/rental-time-management/rental-time-management.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,8 +26,7 @@ import { RentalTimeManagementModule } from './api/rental-time-management/rental-
     CenterModule,
     StudioModule,
     TempStudioModule,
-    NaverGeocodingModule,
-    RentalTimeManagementModule
+    NaverGeocodingModule
   ],
   controllers: [AppController],
   providers: [

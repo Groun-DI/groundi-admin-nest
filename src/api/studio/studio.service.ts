@@ -16,6 +16,7 @@ import { RentalPriceCreateBody } from 'src/dto/rental-price-create.body';
 import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
 import { DateFilterDto } from 'src/dto/date-filter.body';
+import { RentalReceiptCreateBody } from 'src/dto/rental-receipt-create.body';
 
 @Injectable()
 export class StudioService {
@@ -82,6 +83,23 @@ export class StudioService {
     return studio;
   }
 
+
+  async rentalReceiptsCreate(rentalRequestFormId: number, body: RentalReceiptCreateBody): Promise<StudioRentalReceiptsModel> {
+    //아임포트 결제 로직 필요
+    const res = await this.prismaService.studioRentalReceipts.create({
+      data: {
+        StudioRentalRequestForms: {
+          connect: {
+            id: rentalRequestFormId
+          }
+        },
+        receiptNumber: body.receiptNumber
+      }
+    });
+
+    return res;
+  }
+
   async rentalPriceCreate(studioId: number, body: RentalPriceCreateBody) {
     const res = await this.prismaService.studioRentalPrices.create({
       data: {
@@ -137,6 +155,7 @@ export class StudioService {
 
     return res;
   }
+
   studioImageCreate(studioId: number, body: StudioImageCreateBody) {
     return '';
   }

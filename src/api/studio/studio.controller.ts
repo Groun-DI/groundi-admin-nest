@@ -18,6 +18,7 @@ import { HolidayCreateBody } from 'src/dto/holiday-create-body';
 import { NationalHolidayCreateBody } from 'src/dto/national-holiday-create-body';
 import { DateFilter } from 'src/decorators/filter/date.decorator';
 import { DateFilterDto } from 'src/dto/date-filter.body';
+import { RentalReceiptCreateBody } from 'src/dto/rental-receipt-create.body';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/centers/:centerId/studios')
@@ -45,6 +46,11 @@ export class StudioController {
     return this.studioService.nationalHolidaysCreate(+studioId, body);
   }
 
+  @Post(':studioId/rental-request-forms/:rentalRequestFormId/rental-receipts')
+  rentalReceiptsCreate(@Param('rentalRequestFormId') rentalRequestFormId: number, @Body() body: RentalReceiptCreateBody): Promise<StudioRentalReceiptsModel> {
+    return this.studioService.rentalReceiptsCreate(+rentalRequestFormId, body);
+  }
+
   @Get()
   studioFindAll(@Param('centerId') centerId: number) {
     return this.studioService.studioFindAll(+centerId);
@@ -59,7 +65,6 @@ export class StudioController {
   rentalPriceFindAll(@Param('studioId') studioId: string): Promise<StudioRentalPricesModel[]> {
     return this.studioService.rentalPriceFindAll(+studioId);
   }
-
 
   @Get(':studioId/rental-receipts')
   rentalReceiptsFindAll(@Param('studioId') studioId: string, @DateFilter() dateFilter: DateFilterDto): Promise<StudioRentalReceiptsModel[]> {
