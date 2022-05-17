@@ -25,13 +25,17 @@ export class CenterService {
 
     const center = await this.prismaService.centers.create({
       data: {
-        adminId: userId,
+        CenterAdmins: {
+          connect: {
+            id: userId
+          }
+        },
         name: body.name,
         address: body.address,
         detailAddress: body.detailAddress,
         phoneNumber: body.phoneNumber,
-        latitude: +body.latitude,
-        longitude: +body.longitude,
+        latitude: body.latitude,
+        longitude: body.longitude,
         busniessLicenseNumber: body.address,
         attachedFileUrlOfBusinessLicense: uploadFile.Location
       }

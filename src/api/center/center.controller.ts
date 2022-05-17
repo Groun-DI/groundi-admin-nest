@@ -7,6 +7,7 @@ import { User } from '../../decorators/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParkingLotUpdateBody } from 'src/dto/parkinglot-update.body';
 import { CreateCenterParkingLotDto } from 'src/dto/parkinglot-create.body';
+import { Center } from 'src/decorators/center.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/centers')
@@ -15,8 +16,8 @@ export class CenterController {
 
   @Post()
   @UseInterceptors(FileInterceptor('busniessLicenseFile'))
-  centerCreate(@User() user: JwtModel, @UploadedFile() busniessLicenseFile: Express.Multer.File, @Body() createCenterDto: CreateCenterDto) {
-    return this.centerService.centerCreate(+user.id, busniessLicenseFile, createCenterDto);
+  centerCreate(@User() user: JwtModel, @UploadedFile() busniessLicenseFile: Express.Multer.File, @Center() body: CreateCenterDto) {
+    return this.centerService.centerCreate(+user.id, busniessLicenseFile, body);
   }
 
   @Post(':centerId/parkinglot')
